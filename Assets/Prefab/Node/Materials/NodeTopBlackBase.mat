@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8252408017073664467
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 7
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: NodeTopBlackBase
+  m_Shader: {fileID: -6465566751694194690, guid: aa03cf62d380e474bac03058d9c10e83,
+    type: 3}
+  m_Parent: {fileID: -876546973899608171, guid: aa03cf62d380e474bac03058d9c10e83,
+    type: 3}
+  m_ModifiedSerializedProperties: 6
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 2
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs: []
+    m_Ints: []
+    m_Floats:
+    - _BG_Roughness: 0.54
+    - _BlendScreen: 1
+    - _Border_Roughness: 0.263
+    - _Grid_Roughness: 0.119
+    - _Normal_Speckle_Strength: 0.21
+    - _Normal_Strength: 0.311
+    - _QueueControl: 0
+    - _Speckle_Opacity: 0.63
+    m_Colors:
+    - _BG_Color: {r: 0, g: 0, b: 0, a: 1}
+    - _Grid_Color: {r: 0.20754719, g: 0.20754719, b: 0.20754719, a: 1}
+    - _Remap_Roughness: {r: 0, g: 1, b: 0, a: 0}
+    - _Specular_Color: {r: 0.16037738, g: 0.16037738, b: 0.16037738, a: 0}
+  m_BuildTextureStacks: []
