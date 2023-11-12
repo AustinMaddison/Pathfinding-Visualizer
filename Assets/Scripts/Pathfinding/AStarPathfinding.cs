@@ -2,12 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pathfinding
+public class AStarPathfinding
 { 
 
-    private Grid2d<Node> grid;
 
-    public Pathfinding(int width, int height) 
+    public AStarPathfinding(int width, int height) 
     { 
         //grid = new Grid2d<Node>(width, height, 1, Vector3.zero);
     }

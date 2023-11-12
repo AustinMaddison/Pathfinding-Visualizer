@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: NodeTopBlue
+  m_Name: NodeTopRed
   m_Shader: {fileID: -6465566751694194690, guid: aa03cf62d380e474bac03058d9c10e83,
     type: 3}
   m_Parent: {fileID: 2100000, guid: d33485bc6f267814ea28f2bb57f9399c, type: 2}
@@ -27,9 +27,7 @@ Material:
     m_Ints: []
     m_Floats: []
     m_Colors:
-    - _BG_Color: {r: 0, g: 0.32743883, b: 1, a: 1}
-    - _Border_Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Grid_Color: {r: 0.22829269, g: 0.26887807, b: 0.312, a: 1}
+    - _BG_Color: {r: 1, g: 0.05179957, b: 0, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &2777720744813998866
 MonoBehaviour:

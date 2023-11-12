@@ -7,10 +7,10 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: NodeTopBlue
-  m_Shader: {fileID: -6465566751694194690, guid: aa03cf62d380e474bac03058d9c10e83,
+  m_Name: Cursor
+  m_Shader: {fileID: -6465566751694194690, guid: d1ce8709172a9a64b9e7c1f7e50c3d15,
     type: 3}
-  m_Parent: {fileID: 2100000, guid: d33485bc6f267814ea28f2bb57f9399c, type: 2}
+  m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -23,15 +23,29 @@ Material:
   m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
-    m_TexEnvs: []
+    m_TexEnvs:
+    - unity_Lightmaps:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_LightmapsInd:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - unity_ShadowMasks:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
-    m_Floats: []
+    m_Floats:
+    - _QueueControl: 0
+    - _QueueOffset: 0
+    - _Speed: 2
     m_Colors:
-    - _BG_Color: {r: 0, g: 0.32743883, b: 1, a: 1}
-    - _Border_Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Grid_Color: {r: 0.22829269, g: 0.26887807, b: 0.312, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 0}
+    - _Remap: {r: 0, g: 0.1, b: 0, a: 0}
   m_BuildTextureStacks: []
---- !u!114 &2777720744813998866
+--- !u!114 &8059929053294879002
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
