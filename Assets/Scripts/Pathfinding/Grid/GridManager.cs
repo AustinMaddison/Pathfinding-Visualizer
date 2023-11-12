@@ -20,8 +20,8 @@ public class GridManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI inputX;
     [SerializeField] private TextMeshProUGUI inputY;
 
-    private GameObject startNode  = null;
-    private GameObject endNode = null;
+    private GameObject nodeStart  = null;
+    private GameObject nodeEnd = null;
 
     void Start()
     {
@@ -69,14 +69,14 @@ public class GridManager : MonoBehaviour
     //{
     //}
  
-    public GameObject StartNode 
+    public GameObject NodeStart 
     { 
-        get { return startNode; } 
-        set{ startNode = value; } 
+        get { return nodeStart; } 
+        set{ nodeStart = value; } 
     }
-    public GameObject EndNode 
+    public GameObject NodeEnd 
     { 
-        get { return endNode; } 
-        set { endNode = value; } 
+        get { return nodeEnd; } 
+        set { nodeEnd = value; } 
     }
 }

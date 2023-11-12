@@ -1163,7 +1163,7 @@ Camera:
   m_ShutterSpeed: 0.005
   m_Aperture: 16
   m_FocusDistance: 10
-  m_FocalLength: 2.8345041
+  m_FocalLength: 1.5857989
   m_BladeCount: 5
   m_Curvature: {x: 2, y: 11}
   m_BarrelClipping: 0.25
@@ -1178,7 +1178,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 20.00786
+  field of view: 34.99997
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -1204,8 +1204,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 320706870}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.40765542, y: 0.00000002721357, z: -0.000000012149079, w: 0.9131358}
-  m_LocalPosition: {x: 0, y: 14.07086, z: -12.61829}
+  m_LocalRotation: {x: 0.5246458, y: -0.000000014648148, z: 0.000000009027255, w: 0.8513206}
+  m_LocalPosition: {x: 0, y: 32.15819, z: -16.18176}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2758,37 +2758,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 591894860}
   m_CullTransparentMesh: 1
---- !u!1 &614303267
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 614303269}
-  m_Layer: 0
-  m_Name: Cloner
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &614303269
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 614303267}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &640555701
 GameObject:
   m_ObjectHideFlags: 0
@@ -3385,8 +3354,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 64.5, y: -7.4}
-  m_SizeDelta: {x: 50, y: 29}
+  m_AnchoredPosition: {x: 64.5, y: -4}
+  m_SizeDelta: {x: 47.5, y: 26}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &799566932
 MonoBehaviour:
@@ -4110,37 +4079,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 888570799}
   m_CullTransparentMesh: 1
---- !u!1 &909559116
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 909559118}
-  m_Layer: 0
-  m_Name: Pathfinding
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &909559118
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 909559116}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.017735273, y: -0.4445531, z: 0.1421158}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &913985467
 GameObject:
   m_ObjectHideFlags: 0
@@ -4385,7 +4323,7 @@ MonoBehaviour:
   m_LookAt: {fileID: 1746630099}
   m_Follow: {fileID: 1746630099}
   m_Lens:
-    FieldOfView: 20.00786
+    FieldOfView: 34.99997
     OrthographicSize: 5
     NearClipPlane: 0.3
     FarClipPlane: 1000
@@ -4411,8 +4349,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 971664171}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.40765542, y: 0.00000002721357, z: -0.000000012149079, w: 0.9131358}
-  m_LocalPosition: {x: 0, y: 14.07086, z: -12.61829}
+  m_LocalRotation: {x: 0.5246458, y: -0.000000014648148, z: 0.000000009027255, w: 0.8513206}
+  m_LocalPosition: {x: 0, y: 32.15819, z: -16.18176}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4513,7 +4451,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: v1.00
+  m_text: v0.1.0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 28a47f4dfef39364aa99c49b8dcf5634, type: 2}
   m_sharedMaterial: {fileID: -1784519940940312395, guid: 28a47f4dfef39364aa99c49b8dcf5634,
@@ -4723,8 +4661,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: This software is released under the MIT License. See the LICENSE file for
-    details. Created by Austin J. Maddison. 2023
+  m_text: Visual Pathfinder git repository under MIT License. Powered by Unity Technologies
+    realtime engine. Developed by Austin J Maddison.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 28a47f4dfef39364aa99c49b8dcf5634, type: 2}
   m_sharedMaterial: {fileID: -1784519940940312395, guid: 28a47f4dfef39364aa99c49b8dcf5634,
@@ -4752,14 +4690,14 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 10.5
-  m_fontSizeBase: 10.5
+  m_fontSize: 11.69
+  m_fontSizeBase: 11.69
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 16
-  m_HorizontalAlignment: 1
+  m_fontStyle: 0
+  m_HorizontalAlignment: 4
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: -2.96
@@ -5608,7 +5546,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 20, y: 0}
-  m_SizeDelta: {x: 230, y: 21}
+  m_SizeDelta: {x: 188, y: 23}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1298695664
 MonoBehaviour:
@@ -7616,7 +7554,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 1
-  m_FollowOffset: {x: 0, y: 14.07086, z: -12.61829}
+  m_FollowOffset: {x: 0, y: 32.15819, z: -16.18176}
   m_XDamping: 0
   m_YDamping: 0
   m_ZDamping: 0
@@ -8508,37 +8446,6 @@ RectTransform:
   m_AnchoredPosition: {x: 40.681137, y: -18.4}
   m_SizeDelta: {x: 84.6053, y: 35.276}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &2116087940
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2116087942}
-  m_Layer: 0
-  m_Name: PathfindingApp
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2116087942
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2116087940}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.59846467, y: 0.21634893, z: -0.116706386}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &4333239871212708889
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8616,9 +8523,6 @@ PrefabInstance:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 909559118}
-  - {fileID: 2116087942}
-  - {fileID: 614303269}
   - {fileID: 1960916089}
   - {fileID: 60220463}
   - {fileID: 1605494985}

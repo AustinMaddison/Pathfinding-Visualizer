@@ -194,11 +194,11 @@ public class Node : MonoBehaviour
 
     public bool isStart
     {
-        get { return gridManager.StartNode == GetComponent<GameObject>(); }
+        get { return gridManager.NodeStart == GetComponent<GameObject>(); }
     }
 
     public bool isEnd
     {
-        get { return gridManager.EndNode == GetComponent<GameObject>(); }
+        get { return gridManager.NodeEnd == GetComponent<GameObject>(); }
     }
 }
