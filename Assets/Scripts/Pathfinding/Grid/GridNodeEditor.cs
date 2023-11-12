@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class GridNodeEditor : MonoBehaviour
@@ -15,6 +14,7 @@ public class GridNodeEditor : MonoBehaviour
 
     private bool isActive = true;
     private bool isDragging = false;
+    private Vector2Int lastEditPos; 
 
     private EditMode editMode = EditMode.NONE;
 
@@ -81,21 +81,26 @@ public class GridNodeEditor : MonoBehaviour
     // Set Grid Start, End and Obstacle Nodes
     private void UpdateNodeEdit()
     {
+        
         if (cursor.IsOutBound || editMode == EditMode.NONE) return;
 
-        if (!isDragging)
+        // Hold Drag Mechanic
+        if (Input.GetMouseButtonDown(0))
         {
-            if (Input.GetMouseButtonUp(0))
-                isDragging = true;
+            isDragging = true;
         }
-        else
+        else if (Input.GetMouseButtonUp(0))
         {
-            if (Input.GetMouseButtonUp(0))
-                isDragging = false;
+            isDragging = false;
+            lastEditPos = new Vector2Int(-1, -1); // reset
         }
 
-        if (isDragging)
+        //if (Input.GetMouseButtonUp(0))
+        //    isDragging = false;
+
+        if (isDragging && cursor.GetMouseNodePos != lastEditPos)
         {
+            lastEditPos = cursor.GetMouseNodePos;
             GameObject node = grid.GetValue(cursor.GetMouseNodePos);
 
             switch (editMode) 
