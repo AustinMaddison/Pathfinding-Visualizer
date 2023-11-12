@@ -7,30 +7,12 @@ using UnityEngine;
 
 public class WorldGrid : MonoBehaviour
 {
-    [SerializeField] private Vector2Int gridSize = new Vector2Int(5, 5);
+    [SerializeField] private Vector2Int gridSize;
     [SerializeField] private Vector2 nodeSize = Vector2.one;
     [SerializeField] private Vector3 originPosition  = Vector3.zero;
 
     [SerializeField] private GameObject nodePrefab;
-
-    private GameObject[,] grid;
-
-    // Input from UI
-    [SerializeField] private TextMeshProUGUI defaultX;
-    [SerializeField] private TextMeshProUGUI defaultY;
-    [SerializeField] private TextMeshProUGUI inputX;
-    [SerializeField] private TextMeshProUGUI inputY;
-
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        defaultX.text = "" + gridSize.x;
-        defaultY.text = "" + gridSize.y;
-
-        InitGrid();
-    }
+    private GameObject[,] grid = null;
 
     public void InitGrid()
     {
@@ -50,9 +32,25 @@ public class WorldGrid : MonoBehaviour
         }
     }
 
-    public Vector2 GetGridSize()
+    public void DestroyGrid()
     {
-        return gridSize;
+        if (grid != null)
+        {
+            foreach (GameObject node in grid) Destroy(node);
+        }
+    }
+
+    public Vector2Int GridSize
+    {
+        get
+        {
+            return gridSize;
+        }
+
+        set
+        {
+            gridSize = value;
+        }
     }
   
     public Vector2 GetNodeSize()
@@ -89,11 +87,7 @@ public class WorldGrid : MonoBehaviour
 
     }
 
-    private int Tmp2Int(TextMeshProUGUI textMP)
-    {
-        int.TryParse(textMP.text.Replace((char)8203, ' '), out int num);
-        return num;
-    }
+
 
 
 
