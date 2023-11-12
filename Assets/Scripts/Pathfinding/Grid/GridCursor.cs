@@ -7,6 +7,7 @@ using UnityEngine.UIElements;
 public class GridCursor : MonoBehaviour
 {
     [SerializeField] private Plane plane = new Plane(Vector3.up, 0f);
+    [SerializeField] private GridNodeEditor editor;
     
     private Camera cam;
     [SerializeField] private Vector3 currentMousePos;
@@ -40,7 +41,7 @@ public class GridCursor : MonoBehaviour
         
         transform.position = Vector3.Lerp(transform.position, mousePosWorld, Mathf.Pow(lerpSpeed * Time.deltaTime, lerpGradient));
 
-        if(mousePosWorld.x < 0 || mousePosWorld.x >= visibleRegion.x || mousePosWorld.z < 0 || mousePosWorld.z >= visibleRegion.y)
+        if(IsOutBound || editor.GetEditMode == GridNodeEditor.EditMode.NONE)
         {
             gameObject.GetComponentInChildren<MeshRenderer>().enabled = false;
 
@@ -57,5 +58,16 @@ public class GridCursor : MonoBehaviour
         {
             visibleRegion = value;
         }
+    }
+
+    public bool IsOutBound
+    {
+        get { return mousePosWorld.x < 0 || mousePosWorld.x >= visibleRegion.x || mousePosWorld.z < 0 || mousePosWorld.z >= visibleRegion.y; }
+    }
+
+    public Vector2Int GetMouseNodePos { get 
+        { 
+            return new Vector2Int(Mathf.FloorToInt(mousePosWorld.x), Mathf.FloorToInt(mousePosWorld.z)) ; 
+        } 
     }
 }

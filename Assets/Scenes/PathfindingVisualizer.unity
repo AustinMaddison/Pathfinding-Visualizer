@@ -20,13 +20,13 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 1, g: 1, b: 1, a: 1}
+  m_AmbientSkyColor: {r: 0.3679245, g: 0.3679245, b: 0.3679245, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
-  m_AmbientMode: 0
+  m_AmbientMode: 3
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: d3094b132d1843f44a60e28f0eb9314a, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 8fc9e23099369c74795b0f01a3c06a36, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -37,7 +37,7 @@ RenderSettings:
   m_ReflectionBounces: 1
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
-  m_Sun: {fileID: 0}
+  m_Sun: {fileID: 846911639}
   m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
@@ -1162,7 +1162,7 @@ Camera:
   m_ShutterSpeed: 0.005
   m_Aperture: 16
   m_FocusDistance: 10
-  m_FocalLength: 1.3737398
+  m_FocalLength: 1.3737388
   m_BladeCount: 5
   m_Curvature: {x: 2, y: 11}
   m_BarrelClipping: 0.25
@@ -1177,7 +1177,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 39.99997
+  field of view: 40
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -1203,8 +1203,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 320706870}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.6297744, y: 0.00000002988511, z: -0.000000024229413, w: 0.7767781}
-  m_LocalPosition: {x: 0, y: 35.22202, z: -7.443661}
+  m_LocalRotation: {x: 0.47996786, y: 0.00000005264892, z: -0.000000028804504, w: 0.87728614}
+  m_LocalPosition: {x: 0, y: 20.86437, z: -13.36046}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3639,13 +3639,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 846911637}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.7615351, y: -0.33948335, z: 0.41842365, w: 0.36019018}
+  m_LocalRotation: {x: 0.8294781, y: -0.29328987, z: 0.39207092, w: 0.26875165}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 60220463}
-  m_LocalEulerAnglesHint: {x: 123.62399, y: -45.173004, z: 22.918}
+  m_LocalEulerAnglesHint: {x: 137.481, y: -41.958008, z: 21.975998}
 --- !u!1 &875670975
 GameObject:
   m_ObjectHideFlags: 0
@@ -4266,7 +4266,7 @@ MonoBehaviour:
   m_LookAt: {fileID: 1746630099}
   m_Follow: {fileID: 1746630099}
   m_Lens:
-    FieldOfView: 39.99997
+    FieldOfView: 40
     OrthographicSize: 5
     NearClipPlane: 0.3
     FarClipPlane: 1000
@@ -4292,8 +4292,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 971664171}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.6297744, y: 0.00000002988511, z: -0.000000024229413, w: 0.7767781}
-  m_LocalPosition: {x: 0, y: 35.22202, z: -7.443661}
+  m_LocalRotation: {x: 0.47996786, y: 0.00000005264892, z: -0.000000028804504, w: 0.87728614}
+  m_LocalPosition: {x: 0, y: 20.86437, z: -13.36046}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5966,6 +5966,7 @@ Transform:
   m_Children:
   - {fileID: 1704750387}
   - {fileID: 2093219574}
+  - {fileID: 1557197736}
   m_Father: {fileID: 919469146}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1353864987
@@ -5982,6 +5983,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   grid: {fileID: 2093219575}
   cursor: {fileID: 1704750388}
+  editor: {fileID: 0}
   gridSize: {x: 5, y: 5}
   defaultX: {fileID: 10148943}
   defaultY: {fileID: 1346102905}
@@ -6735,6 +6737,57 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1544736423}
   m_CullTransparentMesh: 1
+--- !u!1 &1557197735
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1557197736}
+  - component: {fileID: 1557197737}
+  m_Layer: 0
+  m_Name: GridNodeEditor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1557197736
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1557197735}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1353864986}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1557197737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1557197735}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5478f58bfddc62d499145a1c8ce7d592, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cursor: {fileID: 1704750388}
+  grid: {fileID: 2093219575}
+  defaultMat: {fileID: 2100000, guid: b6e363152dca44a4d99e41dd493878d1, type: 2}
+  obstacleMat: {fileID: 2100000, guid: 9be44c05a769d1a4cbce0fb4a65f79f4, type: 2}
+  startEndMat: {fileID: 2100000, guid: 17d0d10ecfa017d48b4160b39f72f902, type: 2}
+  openMat: {fileID: 2100000, guid: 3cac1959772658c44bc593ffcc01771e, type: 2}
+  closeMat: {fileID: 2100000, guid: d4ca73fc90aeb204bbb317c21ecbcc7e, type: 2}
 --- !u!1 &1557591262
 GameObject:
   m_ObjectHideFlags: 0
@@ -7448,7 +7501,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BindingMode: 1
-  m_FollowOffset: {x: 0, y: 35.22202, z: -7.443661}
+  m_FollowOffset: {x: 0, y: 20.86437, z: -13.36046}
   m_XDamping: 0
   m_YDamping: 0
   m_ZDamping: 0
@@ -8264,7 +8317,7 @@ GameObject:
   - component: {fileID: 2093219574}
   - component: {fileID: 2093219575}
   m_Layer: 0
-  m_Name: WorldGrid
+  m_Name: Grid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

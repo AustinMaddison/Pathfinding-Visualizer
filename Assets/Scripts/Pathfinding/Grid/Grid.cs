@@ -5,8 +5,9 @@ using TMPro;
 using UnityEditor;
 using UnityEngine;
 
-public class WorldGrid : MonoBehaviour
+public class Grid : MonoBehaviour
 {
+    [SerializeField] private GridManager gridManager;
     [SerializeField] private Vector2Int gridSize;
     [SerializeField] private Vector2 nodeSize = Vector2.one;
     [SerializeField] private Vector3 originPosition  = Vector3.zero;
@@ -25,7 +26,10 @@ public class WorldGrid : MonoBehaviour
             {
 
                 tmp = Instantiate(nodePrefab, new Vector3(x, 0f, y), Quaternion.identity);
-                tmp.GetComponent<GridNode>().SetPosition(x, y);
+
+                Node node = tmp.GetComponent<Node>();
+                node.SetPosition(x, y);
+                node.SetGridManager = gridManager;
                 tmp.transform.SetParent(transform, true);
                 grid[x, y] = tmp;
             }
@@ -74,18 +78,20 @@ public class WorldGrid : MonoBehaviour
         y = Mathf.FloorToInt((worldPosition - originPosition).y / nodeSize.y);
     }
 
-    public GameObject GetValue(int x, int y)
+    public GameObject GetValue(Vector2Int pos)
     {
-        if (x >= 0 && y >= 0 && x < grid.GetLength(0) && y < grid.GetLength(1))
+        if (pos.x >= 0 && pos.y >= 0 && pos.x < grid.GetLength(0) && pos.y < grid.GetLength(1))
         {
-            return grid[x, y];
+            return grid[pos.x, pos.y];
         }
         else
         {
+            Debug.Log("GetValue() out of bounds");
             return null;
         }
 
     }
+
 
 
 

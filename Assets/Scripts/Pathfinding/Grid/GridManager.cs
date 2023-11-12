@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GridManager : MonoBehaviour
 {
     [Header("Components")]
-    [SerializeField] private WorldGrid grid;
+    [SerializeField] private Grid grid;
     [SerializeField] private GridCursor cursor;
+    [SerializeField] private GridNodeEditor editor;
 
     [Header("Configuration")]
     [SerializeField] Vector2Int gridSize = new Vector2Int(5, 5);
@@ -18,8 +20,9 @@ public class GridManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI inputX;
     [SerializeField] private TextMeshProUGUI inputY;
 
+    private GameObject startNode  = null;
+    private GameObject endNode = null;
 
-    // Start is called before the first frame update
     void Start()
     {
         // GUI fields
@@ -33,10 +36,11 @@ public class GridManager : MonoBehaviour
     {
         updateGridSizeFromInput();
 
-        // Update Componenets
+        // Cursor
         cursor.VisibleRegion = gridSize;
+
+        // Grid 
         grid.GridSize = gridSize;
-        Debug.Log("grid size: " + grid.GridSize);
         grid.DestroyGrid();
         grid.InitGrid();
     }
@@ -60,10 +64,19 @@ public class GridManager : MonoBehaviour
         }
     } 
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
+    //// Update is called once per frame
+    //void Update()
+    //{
+    //}
  
-
+    public GameObject StartNode 
+    { 
+        get { return startNode; } 
+        set{ startNode = value; } 
+    }
+    public GameObject EndNode 
+    { 
+        get { return endNode; } 
+        set { endNode = value; } 
+    }
 }
