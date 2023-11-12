@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class GridNodeEditor : MonoBehaviour
@@ -12,6 +14,7 @@ public class GridNodeEditor : MonoBehaviour
     [SerializeField] private Grid grid;
 
     private bool isActive = true;
+    private bool isDragging = false;
 
     private EditMode editMode = EditMode.NONE;
 
@@ -75,147 +78,120 @@ public class GridNodeEditor : MonoBehaviour
         }
     }
 
-
     // Set Grid Start, End and Obstacle Nodes
     private void UpdateNodeEdit()
     {
         if (cursor.IsOutBound || editMode == EditMode.NONE) return;
 
-        if (Input.GetMouseButtonDown(0))
+        if (!isDragging)
         {
-            Vector2Int nodePos = cursor.GetMouseNodePos;
-            GameObject nodeToEdit = grid.GetValue(nodePos);
+            if (Input.GetMouseButtonUp(0))
+                isDragging = true;
+        }
+        else
+        {
+            if (Input.GetMouseButtonUp(0))
+                isDragging = false;
+        }
 
-            GameObject tmpOldNode;
-            switch (editMode)
+        if (isDragging)
+        {
+            GameObject node = grid.GetValue(cursor.GetMouseNodePos);
+
+            switch (editMode) 
             {
-                // Cases for setting node state.
                 case EditMode.SET_START:
-
-                    tmpOldNode = null;
-                    // start to start -> set deafult
-                    if (nodeToEdit == gridManager.StartNode)
-                    {
-                        gridManager.StartNode = null;
-                    }
-
-                    // start to end 
-                    else if (nodeToEdit == gridManager.EndNode)
-                    {
-                        tmpOldNode = gridManager.EndNode;
-
-                        gridManager.EndNode = null;
-                        gridManager.StartNode = nodeToEdit;
-                    }
-
-                    // obstacle to end
-                    else if (!nodeToEdit.GetComponent<Node>().IsWalkable)
-                    {
-                        tmpOldNode = gridManager.StartNode;
-
-                        nodeToEdit.GetComponent<Node>().IsWalkable = false;
-                        gridManager.StartNode = nodeToEdit;
-                    }
-
-                    // empty
-                    else
-                    {
-                        Debug.Log("change to start");
-                        tmpOldNode = gridManager.StartNode;
-                        gridManager.StartNode = nodeToEdit;
-
-                        gridManager.StartNode.GetComponent<Node>().GetPosition(out int x, out int y);
-                        Debug.Log($"GridmanagerStart: {x} , {y}");
-                        Debug.Log($"isNodeTOEditStart?: {nodeToEdit.GetComponent<Node>().isStart}");
-                    }
-
-                    // Update Changed Node Appearance
-                    nodeToEdit.GetComponent<Node>().UpdateAppearance();
-                    if (tmpOldNode != null)
-                        tmpOldNode.GetComponent<Node>().UpdateAppearance();
-
+                    SetNodeStart(node);
                     break;
-
                 case EditMode.SET_END:
-
-                    tmpOldNode = null;
-                    // end to end -> set deafult
-                    if (nodeToEdit == gridManager.EndNode)
-                    {
-                        gridManager.EndNode = null;
-                    }
-
-                    // start to end 
-                    else if (nodeToEdit == gridManager.StartNode)
-                    {
-                        tmpOldNode = gridManager.StartNode;
-
-                        gridManager.StartNode = null;
-                        gridManager.EndNode = nodeToEdit;
-                    }
-
-                    // obstacle to end
-                    else if (!nodeToEdit.GetComponent<Node>().IsWalkable)
-                    {
-                        tmpOldNode = gridManager.EndNode;
-
-                        nodeToEdit.GetComponent<Node>().IsWalkable = false;
-                        gridManager.EndNode = nodeToEdit;
-                    }
-
-                    // empty
-                    else
-                    {
-                        tmpOldNode = gridManager.EndNode;
-                        gridManager.EndNode = nodeToEdit;
-                    }
-
-                    // Update Changed Node Appearance
-                    nodeToEdit.GetComponent<Node>().UpdateAppearance();
-                    if (tmpOldNode != null)
-                        tmpOldNode.GetComponent<Node>().UpdateAppearance();
-
+                    SetNodeEnd(node);
                     break;
-
                 case EditMode.SET_OBSTACLE:
-
-                    tmpOldNode = null;
-                    // obstacle to obstacle -> set deafult
-                    if (!nodeToEdit.GetComponent<Node>().IsWalkable)
-                    {
-                        nodeToEdit.GetComponent<Node>().IsWalkable = false;
-                    }
-
-                    // start to obstacle 
-                    else if (nodeToEdit == gridManager.StartNode)
-                    {
-                        tmpOldNode = gridManager.StartNode;
-
-                        gridManager.StartNode = null;
-                        nodeToEdit.GetComponent<Node>().IsWalkable = true;
-                    }
-
-                    // end to obstacle
-                    else if (nodeToEdit == gridManager.EndNode)
-                    {
-                        tmpOldNode = gridManager.EndNode;
-
-                        gridManager.EndNode = null;
-                        nodeToEdit.GetComponent<Node>().IsWalkable = true;
-                    }
-
-                    // empty
-                    else
-                    {
-                        nodeToEdit.GetComponent<Node>().IsWalkable = true;
-                    }
-
-                    // Update Changed Node Appearance
-                    nodeToEdit.GetComponent<Node>().UpdateAppearance();
-                    if (tmpOldNode != null)
-                        tmpOldNode.GetComponent<Node>().UpdateAppearance();
+                    SetNodeObstacle(node);
                     break;
             }
+            node.GetComponent<Node>().UpdateAppearance();
+        }
+    }
+
+    private void SetNodeStart(GameObject node)
+    {
+        Node nodeData = node.GetComponent<Node>();
+        NodeState nodeState = nodeData.NodeState;
+
+        switch (nodeState)
+        {
+            case NodeState.START:
+                nodeData.NodeState = NodeState.DEFAULT;    
+                break;
+
+            case NodeState.END:
+                nodeData.NodeState = NodeState.START;
+                break;
+
+            case NodeState.OBSTACLE:
+                nodeData.NodeState = NodeState.START;
+                break;
+
+            case NodeState.DEFAULT:
+                nodeData.NodeState = NodeState.START;
+                break;
+        }
+    }
+
+    private void SetNodeEnd(GameObject node)
+    {
+        Node nodeData = node.GetComponent<Node>();
+        NodeState nodeState = nodeData.NodeState;
+
+        switch (nodeState)
+        {
+            case NodeState.END:
+                nodeData.NodeState = NodeState.DEFAULT;
+                break;
+
+            case NodeState.START:
+                nodeData.NodeState = NodeState.END;
+                break;
+
+            case NodeState.OBSTACLE:
+                nodeData.NodeState = NodeState.END;
+                break;
+
+            case NodeState.DEFAULT:
+                nodeData.NodeState = NodeState.END;
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    private void SetNodeObstacle(GameObject node)
+    { 
+        Node nodeData = node.GetComponent<Node>();
+        NodeState nodeState = nodeData.NodeState;
+
+        switch (nodeState)
+        {
+            case NodeState.OBSTACLE:
+                nodeData.NodeState = NodeState.DEFAULT;
+                break;
+
+            case NodeState.START:
+                nodeData.NodeState = NodeState.OBSTACLE;
+                break;
+
+            case NodeState.END:
+                nodeData.NodeState = NodeState.OBSTACLE;
+                break;
+
+            case NodeState.DEFAULT:
+                nodeData.NodeState = NodeState.OBSTACLE;
+                break;
+
+            default:
+                break;
         }
     }
 

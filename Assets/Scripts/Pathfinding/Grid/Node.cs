@@ -2,11 +2,24 @@ using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using static UnityEditorInternal.ReorderableList;
+
+public enum NodeState
+{
+    DEFAULT,
+    START,
+    END,
+    OBSTACLE,
+    OPEN,
+    CLOSED
+}
 
 public class Node : MonoBehaviour
 {
+   
 
     [Header("Node Type Materials")]
     [SerializeField] private Material defaultMat;
@@ -17,15 +30,12 @@ public class Node : MonoBehaviour
 
     private GridManager gridManager = null;
 
-    // To get final path
+    // To backtrack to get final path.
     private Node cameFromNode = null;
 
-    // State when pathfinder evaluates
+    // Node State
+    NodeState state = NodeState.DEFAULT;
 
-    NodeState nodeState = NodeState.DEFAULT;
-    private bool isOpened = false;
-    private bool isClosed = false;
-    private bool isWalkable = true;
 
     // Position
     private int x;
@@ -43,25 +53,11 @@ public class Node : MonoBehaviour
     [SerializeField] private GameObject labelStart;
     [SerializeField] private GameObject labelEnd;
 
-    // Labels
-    public enum NodeState 
-    {
-        DEFAULT,
-        START,
-        END,
-        OBSTACLE,
-        OPEN,
-        CLOSED
-    }
-
-
     public void Start()
     {
         
     }
-
  
-
     public void SetCellType()
     {
 
@@ -103,36 +99,41 @@ public class Node : MonoBehaviour
         return cameFromNode;
     }
 
-
     // Update Appearance: Material and Labels 
     public void UpdateAppearance()
     {
-        Debug.Log($"node[{x}, {y}] = isStart: {isStart}, isEnd: {isEnd}, Obstacle: {!isWalkable}");
+        Debug.Log($"node[{x}, {y}] = state: {state}");
         UpdateMaterial();
         UpdateLabel();
     }
 
     private void UpdateMaterial()
     {
-        if (isStart || isEnd)
+        switch (state)
         {
-            ChangeMaterial(startEndMat);
-        }
-        else if (!IsWalkable)
-        {
-            ChangeMaterial(obstacleMat);
-        }
-        else if (isOpened)
-        {
-            ChangeMaterial(openMat);
-        }
-        else if (isClosed)
-        {
-            ChangeMaterial(closeMat);
-        }
-        else
-        {
-            ChangeMaterial(defaultMat);
+            case NodeState.DEFAULT:
+                ChangeMaterial(defaultMat);
+                break;
+
+            case NodeState.START:
+                ChangeMaterial(startEndMat);
+                break;
+
+            case NodeState.END:
+                ChangeMaterial(startEndMat);
+                break;
+
+            case NodeState.OBSTACLE:
+                ChangeMaterial(obstacleMat);
+                break;
+
+            case NodeState.OPEN:
+                ChangeMaterial(openMat);
+                break;
+
+            case NodeState.CLOSED:
+                 ChangeMaterial(closeMat);
+                break;
         }
     }
 
@@ -141,17 +142,21 @@ public class Node : MonoBehaviour
         UpdateLabelVisibility();
         UpdateCostLabelValues();
     }
+
     private void UpdateLabelVisibility()
     {
-        labelStart.SetActive(isStart);
-        labelEnd.SetActive(isEnd);
+        // Start and End
+        labelStart.SetActive(state == NodeState.START);
+        labelEnd.SetActive(state == NodeState.END);
         
-        if(isOpened || isClosed)
+        // Cost
+        void labelCostVisibiliity(bool b)
         {
-            labelHCost.SetActive(true);
-            labelGCost.SetActive(true);
-            labelFCost.SetActive(true);
+            labelHCost.SetActive(b);
+            labelGCost.SetActive(b);
+            labelFCost.SetActive(b);
         }
+        labelCostVisibiliity(state == NodeState.OPEN || state == NodeState.CLOSED);
     }
 
     private void UpdateCostLabelValues()
@@ -187,40 +192,15 @@ public class Node : MonoBehaviour
         set { gridManager = value; }
     }
 
-    public bool IsWalkable
-    {
-        get { return isWalkable; }
-        set { isWalkable = value; }
-    }
-
-    public bool IsOpened
-    {
-        get { return isOpened; }
-        set { isOpened = value; }
-    }
-
-    public bool IsClosed
-    {
-        get { return isClosed; }
-        set { isClosed = value; }
-    }
+    public NodeState NodeState { get { return state; } set { state = value; } }
 
     public bool isStart
     {
-        get 
-        {
-            return gridManager.StartNode == GetComponent<GameObject>(); 
-        }
+        get { return gridManager.StartNode == GetComponent<GameObject>(); }
     }
 
     public bool isEnd
     {
-        get
-        {
-            return gridManager.EndNode == GetComponent<GameObject>();
-        }
+        get { return gridManager.EndNode == GetComponent<GameObject>(); }
     }
-
-
-
 }
