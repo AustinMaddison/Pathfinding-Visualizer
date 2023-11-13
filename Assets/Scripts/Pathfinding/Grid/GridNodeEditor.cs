@@ -12,11 +12,11 @@ public class GridNodeEditor : MonoBehaviour
     [SerializeField] private GridCursor cursor;
     [SerializeField] private Grid grid;
 
-    private bool isActive = true;
-    private bool isDragging = false;
-    private Vector2Int lastEditPos; 
+    [SerializeField] private bool isActive = true;
+    [SerializeField] private bool isDragging = false;
+    private Vector2Int lastEditPos = new Vector2Int(-1, -1);
 
-    private EditMode editMode = EditMode.NONE;
+    [SerializeField] private EditMode editMode = EditMode.NONE;
 
     //private LeftClickDown
 
@@ -68,12 +68,12 @@ public class GridNodeEditor : MonoBehaviour
             if (newMode == editMode)
             {
                 editMode = EditMode.NONE;
-                Debug.Log("Mode: " + editMode);
+                //Debug.Log("Mode: " + editMode);
             }
             else
             {
                 editMode = newMode;
-                Debug.Log("Mode: " + editMode);
+                //Debug.Log("Mode: " + editMode);
             }
         }
     }

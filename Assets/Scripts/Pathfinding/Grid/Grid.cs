@@ -28,7 +28,7 @@ public class Grid : MonoBehaviour
                 tmp = Instantiate(nodePrefab, new Vector3(x, 0f, y), Quaternion.identity);
 
                 Node node = tmp.GetComponent<Node>();
-                node.SetPosition(x, y);
+                node.Position = new Vector2Int(x, y);
                 node.SetGridManager = gridManager;
                 tmp.transform.SetParent(transform, true);
                 grid[x, y] = tmp;
@@ -86,11 +86,12 @@ public class Grid : MonoBehaviour
         }
         else
         {
-            Debug.Log("GetValue() out of bounds");
             return null;
         }
 
     }
+
+
 
 
 

@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -15,10 +16,8 @@ public enum NodeState
     CLOSED
 }
 
-public class Node : MonoBehaviour
+public class Node : MonoBehaviour, IComparable<Node>
 {
-   
-
     [Header("Node Type Materials")]
     [SerializeField] private Material defaultMat;
     [SerializeField] private Material obstacleMat;
@@ -34,10 +33,8 @@ public class Node : MonoBehaviour
     // Node State
     NodeState state = NodeState.DEFAULT;
 
-
     // Position
-    private int x;
-    private int y;
+    private Vector2Int postition;
 
     // Heuristics
     private int hCost = 0; // distance from start pos
@@ -55,32 +52,15 @@ public class Node : MonoBehaviour
     {
         
     }
- 
-    public void SetCellType()
-    {
 
-    }
-
-    public void SetPosition(int x, int y)
-    {
-        this.x = x;
-        this.y = y;
-    }
-
-    public void GetPosition(out int x, out int y)
-    {
-        x = this.x;
-        y = this.y;
-    }
-
-    public void GetScore(out int h, out int g, out int f)
+    public void GetCost(out int h, out int g, out int f)
     {
         h = hCost;
         g = gCost;
         f = fCost;
     }
 
-    public void SetScore(int h, int g, int f)
+    public void SetCost(int h, int g, int f)
     {
         hCost = h;
         gCost = g;
@@ -100,7 +80,7 @@ public class Node : MonoBehaviour
     // Update Appearance: Material and Labels 
     public void UpdateAppearance()
     {
-        Debug.Log($"node[{x}, {y}] = state: {state}");
+        //Debug.Log($"node[{postition.x}, {postition.y}] = state: {state}");
         UpdateMaterial();
         UpdateLabel();
     }
@@ -182,7 +162,7 @@ public class Node : MonoBehaviour
 
     public override string ToString()
     {
-        return Mathf.FloorToInt(transform.position.x) + ", " + Mathf.FloorToInt(transform.position.y);
+        return $"({postition.x}, {postition.y})";
     }
 
     public GridManager SetGridManager
@@ -192,13 +172,43 @@ public class Node : MonoBehaviour
 
     public NodeState NodeState { get { return state; } set { state = value; } }
 
-    public bool isStart
+    public bool IsStart
     {
         get { return gridManager.NodeStart == GetComponent<GameObject>(); }
     }
 
-    public bool isEnd
+    public bool IsEnd
     {
         get { return gridManager.NodeEnd == GetComponent<GameObject>(); }
     }
+  
+
+    public Vector2Int Position
+    {
+        get
+        {
+            return postition;
+        }
+        set 
+        {
+            postition = value;
+        }
+    }
+
+    public int CompareTo(Node other)
+    {
+        if (fCost < other.fCost)
+        {
+            return -1;
+        }
+        else if (fCost == other.fCost)
+        {
+            return 0;
+        }
+        else
+        {
+            return 1;
+        }
+    }
+
 }

@@ -20,7 +20,7 @@ public class GridManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI inputX;
     [SerializeField] private TextMeshProUGUI inputY;
 
-    private GameObject nodeStart  = null;
+    private GameObject nodeStart = null;
     private GameObject nodeEnd = null;
 
     void Start()
@@ -53,7 +53,7 @@ public class GridManager : MonoBehaviour
         Debug.Log("x input: " + x);
         Debug.Log("y input: " + y);
 
-        if(x > 0 && x != gridSize.x)
+        if (x > 0 && x != gridSize.x)
         {
             gridSize.x = x;
         }
@@ -62,21 +62,23 @@ public class GridManager : MonoBehaviour
         {
             gridSize.y = y;
         }
-    } 
+    }
 
     //// Update is called once per frame
     //void Update()
     //{
     //}
- 
-    public GameObject NodeStart 
-    { 
-        get { return nodeStart; } 
-        set{ nodeStart = value; } 
+
+    public GameObject NodeStart
+    {
+        get { return nodeStart; }
+        set { nodeStart = value; }
     }
-    public GameObject NodeEnd 
-    { 
-        get { return nodeEnd; } 
-        set { nodeEnd = value; } 
+    public GameObject NodeEnd
+    {
+        get { return nodeEnd; }
+        set { nodeEnd = value; }
     }
+
+    public Grid Grid{ get{ return grid;} }
 }
