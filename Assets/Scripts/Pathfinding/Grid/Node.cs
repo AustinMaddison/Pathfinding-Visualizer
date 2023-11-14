@@ -13,7 +13,13 @@ public enum NodeState
     END,
     OBSTACLE,
     OPEN,
-    CLOSED
+    CLOSED,
+    PATH
+}
+
+public enum Direction
+{
+    NONE, NORTH, SOUTH, WEST, EAST, NORTH_WEST, NORTH_EAST, SOUTH_WEST, SOUTH_EAST
 }
 
 public class Node : MonoBehaviour, IComparable<Node>
@@ -25,21 +31,22 @@ public class Node : MonoBehaviour, IComparable<Node>
     [SerializeField] private Material openMat;
     [SerializeField] private Material closeMat;
 
-    private GridManager gridManager = null;
+    private GridManager gridManager;
 
     // To backtrack to get final path.
-    private Node cameFromNode = null;
+    [SerializeField] private Node cameFromNode;
+    [SerializeField] private Direction cameFromDirection;
 
     // Node State
-    NodeState state = NodeState.DEFAULT;
+    [SerializeField] NodeState state;
 
     // Position
     private Vector2Int postition;
 
-    // Heuristics
-    private int hCost = 0; // distance from start pos
-    private int gCost = 0; // distance from end pos
-    private int fCost = 0; // distance h + g
+    // Cost
+    private int gCost; // cost from start -> node
+    private int hCost; // estimate cost this node -> end
+    private int fCost; // distance g + h 
 
     // Labels
     [SerializeField] private GameObject labelHCost;
@@ -48,33 +55,67 @@ public class Node : MonoBehaviour, IComparable<Node>
     [SerializeField] private GameObject labelStart;
     [SerializeField] private GameObject labelEnd;
 
+    // Direction Arrow
+    [SerializeField] private GameObject arrow;
+
     public void Start()
     {
-        
+        //gridManager = null;
+        cameFromNode = null;
+        cameFromDirection = Direction.NONE;
+
+        state = NodeState.DEFAULT;
+        SetCost(0, 0, 0);
     }
 
-    public void GetCost(out int h, out int g, out int f)
+    public void Reset()
     {
-        h = hCost;
-        g = gCost;
-        f = fCost;
+        Start();
+        UpdateAppearance();
     }
 
-    public void SetCost(int h, int g, int f)
+    public Node CameFromNode
     {
-        hCost = h;
-        gCost = g;
-        fCost = f;
+        get { return cameFromNode; }
+        set 
+        {    
+            cameFromNode = value;
+            UpdateCameFromNodeDirection();
+        }
     }
 
-    public void SetCameFromNode(Node node)
+    private void UpdateCameFromNodeDirection()
     {
-        cameFromNode = node;
-    }
+        Vector2Int direction = postition - cameFromNode.postition;
+        int hashedDirection = direction.x * 5 + direction.y;
 
-    public Node GetCameFromNode(Node node)
-    {
-        return cameFromNode;
+        switch (hashedDirection)
+        {
+            case 0 + 1:
+                cameFromDirection = Direction.SOUTH;
+                break;
+            case 1*5 + 0:
+                cameFromDirection = Direction.EAST;
+                break;
+            case -1*5 + 0:
+                cameFromDirection = Direction.WEST;
+                break;
+            case 0 - 1:
+                cameFromDirection = Direction.NORTH;
+                break;
+            case 1*5 + 1:
+                cameFromDirection = Direction.SOUTH_WEST;
+                break;
+            case -1*5 + 1:
+                cameFromDirection = Direction.SOUTH_EAST;
+                break;
+            case 1*5 - 1:
+                cameFromDirection = Direction.NORTH_EAST;
+                break;
+            case -1*5 - 1:
+                cameFromDirection = Direction.NORTH_WEST;
+                break;
+        }
     }
 
     // Update Appearance: Material and Labels 
@@ -83,6 +124,7 @@ public class Node : MonoBehaviour, IComparable<Node>
         //Debug.Log($"node[{postition.x}, {postition.y}] = state: {state}");
         UpdateMaterial();
         UpdateLabel();
+        //UpdateArrow();
     }
 
     private void UpdateMaterial()
@@ -112,6 +154,10 @@ public class Node : MonoBehaviour, IComparable<Node>
             case NodeState.CLOSED:
                  ChangeMaterial(closeMat);
                 break;
+
+            case NodeState.PATH:
+                ChangeMaterial(startEndMat);
+                break;
         }
     }
 
@@ -119,6 +165,46 @@ public class Node : MonoBehaviour, IComparable<Node>
     {
         UpdateLabelVisibility();
         UpdateCostLabelValues();
+    }
+
+    private void UpdateArrow()
+    {
+        arrow.SetActive(true);
+        if(cameFromNode == null)
+            return;
+
+        Quaternion angle = new Quaternion();
+
+        switch (cameFromDirection)
+        {
+
+            case Direction.NORTH:
+                angle = Quaternion.Euler(90, 0f, 0f);
+                break;
+            case Direction.EAST:
+                angle = Quaternion.Euler(90f, -90f,  0f);
+                break;
+            case Direction.SOUTH:
+                angle = Quaternion.Euler(90, 180f, 0f);
+                break;
+            case Direction.WEST:
+                angle = Quaternion.Euler(90, 90f, 0f);
+                break;
+            case Direction.NORTH_WEST:
+                angle = Quaternion.Euler(90, 45f, 0f);
+                break;
+            case Direction.NORTH_EAST:
+                angle = Quaternion.Euler(90,- 45f, 0f);
+                break;
+            case Direction.SOUTH_WEST:
+                angle = Quaternion.Euler(90, -135f, 0f);
+                break;
+            case Direction.SOUTH_EAST:
+                angle = Quaternion.Euler(90, 135f, 0f);
+                break;
+        }
+
+        arrow.transform.transform.rotation = angle;
     }
 
     private void UpdateLabelVisibility()
@@ -134,7 +220,7 @@ public class Node : MonoBehaviour, IComparable<Node>
             labelGCost.SetActive(b);
             labelFCost.SetActive(b);
         }
-        labelCostVisibiliity(state == NodeState.OPEN || state == NodeState.CLOSED);
+        labelCostVisibiliity(state == NodeState.OPEN || state == NodeState.CLOSED || state == NodeState.PATH);
     }
 
     private void UpdateCostLabelValues()
@@ -160,6 +246,37 @@ public class Node : MonoBehaviour, IComparable<Node>
         renderer.materials = materials;
     }
 
+    public List<Node> GetNeighbours()
+    {
+        Vector2Int pivot = Position;
+        List<Node> neighbours = new List<Node>();
+
+        // Neighbourhood Offset Positions
+        int[,] offsets =
+         {
+            { -1,  0 },
+            {  1,  0 },
+            {  0,  1 },
+            {  0, -1 },
+            { -1,  1 },
+            {  1,  1 },
+            { -1, -1 },
+            {  1, -1 },
+        };
+
+        for (int i = 0; i < offsets.GetLength(0); i++)
+        {
+            Vector2Int neighbourPos = new Vector2Int(pivot.x + offsets[i, 0], pivot.y + offsets[i, 1]);
+            GameObject neighbour = gridManager.Grid.GetValue(neighbourPos);
+
+            if (neighbour != null)
+            {
+                neighbours.Add(neighbour.GetComponent<Node>());
+            }
+        }
+        return neighbours;
+    }
+
     public override string ToString()
     {
         return $"({postition.x}, {postition.y})";
@@ -181,7 +298,6 @@ public class Node : MonoBehaviour, IComparable<Node>
     {
         get { return gridManager.NodeEnd == GetComponent<GameObject>(); }
     }
-  
 
     public Vector2Int Position
     {
@@ -197,18 +313,40 @@ public class Node : MonoBehaviour, IComparable<Node>
 
     public int CompareTo(Node other)
     {
-        if (fCost < other.fCost)
-        {
+        if (fCost <= other.fCost)
             return -1;
-        }
-        else if (fCost == other.fCost)
-        {
+        if (fCost == other.fCost)
             return 0;
-        }
         else
-        {
             return 1;
-        }
     }
 
+    public void GetCost(out int g, out int h, out int f)
+    {
+        h = hCost;
+        g = gCost;
+        f = fCost;
+    }
+
+    public void SetCost(int g, int h, int f)
+    {
+        hCost = h;
+        gCost = g;
+        fCost = f;
+    }
+
+    public int HCost
+    {
+        get { return hCost; }
+    }
+
+    public int GCost
+    {
+        get { return gCost; }
+    }
+
+    public int FCost
+    {
+        get { return fCost; }
+    }
 }

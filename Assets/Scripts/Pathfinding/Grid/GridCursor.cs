@@ -44,7 +44,6 @@ public class GridCursor : MonoBehaviour
         if(IsOutBound || editor.GetEditMode == GridNodeEditor.EditMode.NONE)
         {
             gameObject.GetComponentInChildren<MeshRenderer>().enabled = false;
-
         }
         else 
         { 
@@ -65,7 +64,8 @@ public class GridCursor : MonoBehaviour
         get { return mousePosWorld.x < 0 || mousePosWorld.x >= visibleRegion.x || mousePosWorld.z < 0 || mousePosWorld.z >= visibleRegion.y; }
     }
 
-    public Vector2Int GetMouseNodePos { get 
+    public Vector2Int GetMouseNodePos {
+        get 
         { 
             return new Vector2Int(Mathf.FloorToInt(mousePosWorld.x), Mathf.FloorToInt(mousePosWorld.z)) ; 
         } 

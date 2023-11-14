@@ -4,117 +4,102 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
-
 public class AStarPathfinder: PathfinderInterface
 {
+
+    PathfinderFinnishStatus finnishStatus = PathfinderFinnishStatus.NONE;
     private string pathfinderName = "A*";
 
     private Node nodeStart;
     private Node nodeEnd;
 
-    private List<Node> nodeOpenList;
-    private Grid grid;
+    private HashSet<Node> openNodeSet;
+    private HashSet<Node> closedNodeSet;
 
-    private bool isDone;
+    private bool isPathfinderDone;
 
-    public AStarPathfinder(Node nodeStart, Node nodeEnd, Grid grid)
+    public AStarPathfinder(Node nodeStart, Node nodeEnd)
     {
         this.nodeStart = nodeStart;
         this.nodeEnd = nodeEnd;
-        this.grid = grid;
+
+        openNodeSet = new HashSet<Node>();
+        closedNodeSet = new HashSet<Node>();
+
+        // Calculate startnode costs
+        int h = PathfinderManager.Cost(nodeStart.Position, nodeEnd.Position);
+        nodeStart.SetCost(0, h, h);
 
         // Start from start node.
-        nodeOpenList = new List<Node>
-        {
-            this.nodeStart
-        };
+        openNodeSet.Add(this.nodeStart);
 
-        isDone = false;
+        isPathfinderDone = false;
     }
 
     public override string ToString()
     {
         return pathfinderName;
     }
+
     public void RunIteration()
     {
+        if (openNodeSet.Count == 0)
+        {   
+            isPathfinderDone = true;
+            Debug.Log("Failed to find optimal path.");
+            finnishStatus = PathfinderFinnishStatus.NO_PATH_FOUND;
+            return;
+        }
+        
+        // Find node with best f cost.
+        Node nodeCurrent = openNodeSet.Min();
+        openNodeSet.Remove(nodeCurrent);
 
-
-
-        // Find best open node.
-        Node nodeCurrent = nodeOpenList.Min();
-
-
-        Debug.Log($"Minimum Node: {nodeCurrent}");
-
+        // Found end
+        if (nodeCurrent == nodeEnd)
+        {
+            Debug.Log("Found optimal path.");
+            finnishStatus = PathfinderFinnishStatus.PATH_FOUND;
+            isPathfinderDone = true;
+            return;
+        }
 
         // Close the best node for potential best path.
         CloseNode(nodeCurrent);
-        nodeOpenList.Remove(nodeCurrent);
 
         // Open neighbours for best node.
         OpenNeighbours(nodeCurrent);
-
-
-        string s = "OpenList: ";
-        foreach (Node node in nodeOpenList) 
-        {
-            node.GetCost(out int h, out int g, out int f);
-            s += $"{node}: {f}, "; 
-        }
-        Debug.Log(s);
-
-    }
-
-    private int CalculateDistanceCost(Vector2Int p1, Vector2Int p2)
-    {
-        int distX = Mathf.Abs(p1.x - p2.x);
-        int distY = Mathf.Abs(p1.y - p2.y);
-
-        if (distX > distY)
-            return 14 * distY + 10 * (distX - distY);
-        return 14 * distX + 10 * (distY - distX);
     }
 
     private void OpenNeighbours(Node node)
     {
-        Vector2Int pivot = node.Position;
-
-        // Neighbourhood Offset Positions
-        int[,] offsets =
-         {
-            { -1,  0 },
-            {  1,  0 },
-            {  0,  1 },
-            {  0, -1 },
-            { -1,  1 },
-            {  1,  1 },
-            { -1, -1 },
-            {  1, -1 }, 
-        };
-
-        for (int i = 0; i < offsets.GetLength(0); i++ )
+        foreach (Node neighbour in node.GetNeighbours())
         {
-            Vector2Int neighbourPos = new Vector2Int(pivot.x + offsets[i, 0], pivot.y + offsets[i, 1]);
-            GameObject neighbour = grid.GetValue(neighbourPos);
-
-            if (neighbour == null)
-            {
-                continue;
-            }
-
-            Node neighbourNode = neighbour.GetComponent<Node>();
-            if (neighbourNode.NodeState != NodeState.OBSTACLE && 
-                neighbourNode.NodeState != NodeState.CLOSED &&
-                neighbourNode.NodeState != NodeState.START
+            if (neighbour.NodeState != NodeState.OBSTACLE &&
+                neighbour.NodeState != NodeState.CLOSED &&
+                neighbour.NodeState != NodeState.START
                 )
             {
+                // criteria to choose best path
+                //if (neighbour.NodeState == NodeState.OPEN)
+                //Debug.Log(neighbour);
+                int tentativeGScore = node.GCost + PathfinderManager.Cost(node.Position, neighbour.Position);
 
-                // Process neibour
-                neighbourNode.SetCameFromNode(node);
-                OpenNode(neighbourNode);
-                if(!nodeOpenList.Contains(neighbourNode))
-                    nodeOpenList.Add(neighbourNode);
+                if(tentativeGScore < neighbour.GCost || neighbour.NodeState != NodeState.OPEN)
+                {
+                    neighbour.CameFromNode = node;
+                    
+                    int h = PathfinderManager.Cost(neighbour.Position, nodeEnd.Position);
+                    int f = tentativeGScore + h;
+                    neighbour.SetCost(tentativeGScore, h, f);
+
+                    if (neighbour.NodeState != NodeState.END)
+                    {
+                        neighbour.NodeState = NodeState.OPEN;
+                        neighbour.UpdateAppearance();
+                    }
+                    openNodeSet.Add(neighbour);
+                }
             }
         }
     }
@@ -123,13 +108,11 @@ public class AStarPathfinder: PathfinderInterface
     {
         node.NodeState = NodeState.OPEN;
 
-        int h = CalculateDistanceCost(node.Position, nodeStart.Position);
-        int g = CalculateDistanceCost(node.Position, nodeEnd.Position);
+        int h = PathfinderManager.Cost(node.Position, nodeStart.Position);
+        int g = PathfinderManager.Cost(node.Position, nodeEnd.Position);
         int f = h + g;
-        node.SetCost(h, g, f);
-        
-        //Debug.Log($"startNode:{nodeStart}, node:{node}, {h}, {g}, {f}");
 
+        node.SetCost(h, g, f);
         node.UpdateAppearance();
     }
 
@@ -137,9 +120,13 @@ public class AStarPathfinder: PathfinderInterface
     {
         if (node.NodeState != NodeState.START)
         {
+            closedNodeSet.Add(node);
             node.NodeState = NodeState.CLOSED;
             node.UpdateAppearance();
         }
     }
 
+    public bool IsPathfinderDone => isPathfinderDone;
+    public HashSet<Node> OpenNodeSet => openNodeSet;
+    public HashSet<Node> ClosedNodeSet => closedNodeSet;
 }
