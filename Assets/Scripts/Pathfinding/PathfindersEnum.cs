@@ -1,6 +1,7 @@
 public enum PathfindersEnum 
 {
     A_STAR, 
-    BFS, 
-    A
+    GREEDY, 
+    BFS,
+    DIJKSTRAS, 
 }

@@ -5,10 +5,13 @@ using Cinemachine;
 using UnityEngine.UIElements;
 using Unity.VisualScripting;
 using System;
+using UnityEngine.Events;
 
 namespace CodeMonkey.CameraSystem {
 
     public class CameraSystem : MonoBehaviour {
+
+        [SerializeField] public UnityEvent ResetCamera;
 
         [SerializeField] private CinemachineVirtualCamera cinemachineVirtualCamera;
         [SerializeField] private bool useEdgeScrolling = false;

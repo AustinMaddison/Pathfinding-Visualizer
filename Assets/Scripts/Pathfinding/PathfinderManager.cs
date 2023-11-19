@@ -2,9 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
-
-public enum PathfinderFinnishStatus
+public enum PathfinderStatus
 {
     NONE,
     NO_PATH_FOUND,
@@ -13,160 +13,152 @@ public enum PathfinderFinnishStatus
 
 public class PathfinderManager : MonoBehaviour
 {
-    // GRID MANAGER
-    [SerializeField] private GridManager gridManager;
+    // Singleton
+    public static PathfinderManager Instance { get; private set; }
 
     // ALGORITHM
-    [SerializeField] private PathfindersEnum selectedAlgorithm = PathfindersEnum.A_STAR;
-    [SerializeField] private PathfinderInterface pathfinder;
+    [SerializeField] public PathfindersEnum selectedAlgorithm { get; private set; }
+    private PathfinderInterface pathfinder;
 
     // RUN ITERATION SCHEDULING
     [SerializeField] private float runIterationSpeedSeconds = 1.0f;
     private float timePrevious;
 
     // ALGORITHM STATS
-    [SerializeField] private int iteration;
-    [SerializeField] private int distance;
+    [SerializeField] public int Iteration { get; set; }
+    [SerializeField] public int OpenNodesTotal { get { if (pathfinder == null) { return 0; } else { return pathfinder.OpenNodesTotal; } } }
+    [SerializeField] public int ClosedNodesTotal { get { if (pathfinder == null) { return 0; } else { return pathfinder.ClosedNodesTotal; } } }
+    [SerializeField] public int Distance { get; set; }
     
     // FLAGS
-    [SerializeField] private bool isPathfinderActive;
-    [SerializeField] private bool isRunnning;
-    [SerializeField] private bool isPathfinderFinnnished;
-    //private bool isGridDirty => pathfinder == null;
+    [SerializeField] public bool IsActive { get; private set; }
+    [SerializeField] public bool IsIterationsRunnning { get; private set; }
+    [SerializeField] public bool IsDone { get; private set; }
+    [SerializeField] public bool IsBacktrackDone { get; private set; }
+
+    // EVENTS
+    public UnityEvent NoPathFoundEvent;
+    public UnityEvent PathFoundEvent;
+    public UnityEvent StatsChanged;
+    public UnityEvent PathfinderChanged;
 
     // BACKTRACK
     private Node backtrackNodeCurrent;
 
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+
+    }
+    
     void Start()
     {
-        isRunnning = false;
-        isPathfinderActive = false;
+        selectedAlgorithm = PathfindersEnum.A_STAR;
+        IsIterationsRunnning = false;
+        IsActive = false;
+        IsDone = false;
+        IsBacktrackDone = false;
+
         pathfinder = null;
         backtrackNodeCurrent = null;
         timePrevious = Time.time;
-        iteration = 0;
-        isPathfinderFinnnished = false;
+
+        Iteration = 0;
+        Distance = 0;
+        
     }
 
-    private void Reset()
+    public void Reset()
     {
         ResetGridNodes();
         Start();
-    }
-
-    private void ResetGridNodes()
-    {
-        foreach(Node node in pathfinder.ClosedNodeSet)
-        {
-            if (node.NodeState == NodeState.START || 
-                node.NodeState == NodeState.END)
-                continue;
-
-            node.Reset();
-        }
-        foreach(Node node in pathfinder.OpenNodeSet)
-        {
-            if (node.NodeState == NodeState.START ||
-                node.NodeState == NodeState.END)
-                continue;
-
-            node.Reset();
-        }
+        StatsChanged.Invoke();
     }
 
     void Update()
     {
-        HandleInput();
+        if (!IsBacktrackDone)
+        {
+            if (Time.time - timePrevious >= runIterationSpeedSeconds)
+            {
+                if (IsIterationsRunnning)
+                {
+                    timePrevious = Time.time;
+                    RunIteration();
+                }
+
+                else if (IsDone)
+                {
+                    if (pathfinder.Status == PathfinderStatus.PATH_FOUND)
+                        BacktrackPathIteration();
+                }
+            }
+        }
     }
 
     private void FixedUpdate()
     {
-        if (isPathfinderFinnnished)
-            return;
-
-        if (Time.time - timePrevious >= runIterationSpeedSeconds)
-        {
-            if (isRunnning)
-            {
-                timePrevious = Time.time;
-                RunIteration();
-            }
-
-            else if(isPathfinderActive)
-            {
-                if (pathfinder.IsPathfinderDone)
-                    BacktrackPathIteration();
-            }
-        }
+      
     }
 
-    private void HandleInput()
-    {
-        // Change Algorithm
-        if (!isPathfinderActive)
-        {
-            if (Input.GetKeyDown(KeyCode.LeftArrow))
-            {
-                selectedAlgorithm = selectedAlgorithm.Previous();
-                Debug.Log(Enum.GetName(selectedAlgorithm.GetType(), selectedAlgorithm));
-            }
-
-            if (Input.GetKeyDown(KeyCode.RightArrow))
-            {
-                selectedAlgorithm = selectedAlgorithm.Next();
-                Debug.Log(Enum.GetName(selectedAlgorithm.GetType(), selectedAlgorithm));
-            }
-        }
-
-        // Run Pathfinder
-        if (!isPathfinderFinnnished)
-        {
-            // step iteration 
-            if (Input.GetKeyDown(KeyCode.X))
-            {
-                if (!isRunnning)
-                    RunIteration();
-                else
-                    isRunnning = false;
-            }
-
-            // run toggle
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                isRunnning = !isRunnning;
-            }
-        }
-
-        // Reset Pathdfinding
-        if (isPathfinderActive && !isRunnning)
-        {
-            if (Input.GetKeyDown(KeyCode.Z))
-            {
-                Reset();
-            }
-        }
-    }
-
-    private void RunIteration()
+    public void RunIteration()
     {
         // instantiate algorithm
-        if(!isPathfinderActive)
+        if (!IsActive)
         {
             InitPathfinder();
-            isPathfinderActive = true;
+            IsActive = true;
         }
-
+        
         // Run Iteration
-        pathfinder.RunIteration();
+        if (!IsDone)
+        {
+            pathfinder.RunIteration();
+        }
 
         // Path found -> back track
-        if (pathfinder.IsPathfinderDone) 
+        if (pathfinder.IsDone)
         {
-            backtrackNodeCurrent = gridManager.NodeEnd.GetComponent<Node>().CameFromNode;
-            isRunnning = false;
+            backtrackNodeCurrent = GridManager.Instance.NodeEnd.GetComponent<Node>().CameFromNode;
+            IsDone = true;
+            IsIterationsRunnning = false;
         }
 
-        iteration++;
+        Distance = pathfinder.Distance;
+        Iteration++;
+        StatsChanged.Invoke();
+    }
+
+    public void ToggleRun()
+    {
+        IsIterationsRunnning = !IsIterationsRunnning;
+    }
+
+    private void ResetGridNodes()
+    {
+        foreach (Node node in pathfinder.ClosedNodeSet)
+        {
+            if (node.state == NodeState.START ||
+                node.state == NodeState.END)
+                continue;
+
+            node.Reset();
+        }
+        foreach (Node node in pathfinder.OpenNodeSet)
+        {
+            if (node.state == NodeState.START ||
+                node.state == NodeState.END)
+                continue;
+
+            node.Reset();
+        }
     }
 
     private void InitPathfinder()
@@ -174,24 +166,50 @@ public class PathfinderManager : MonoBehaviour
         switch (selectedAlgorithm)
         {
             case PathfindersEnum.A_STAR:
-                pathfinder = new AStarPathfinder(gridManager.NodeStart.GetComponent<Node>(), gridManager.NodeEnd.GetComponent<Node>());
+                pathfinder = new AStarPathfinder(GridManager.Instance.NodeStart.GetComponent<Node>(), GridManager.Instance.NodeEnd.GetComponent<Node>());
                 break;
+            case PathfindersEnum.DIJKSTRAS:
+                pathfinder = new DijkstrasPathfinder(GridManager.Instance.NodeStart.GetComponent<Node>(), GridManager.Instance.NodeEnd.GetComponent<Node>());
+                break;
+            case PathfindersEnum.BFS:
+                pathfinder = new BFSPathfinder(GridManager.Instance.NodeStart.GetComponent<Node>(), GridManager.Instance.NodeEnd.GetComponent<Node>());
+                break;
+            case PathfindersEnum.GREEDY:
+                pathfinder = new GreedyPathfinder(GridManager.Instance.NodeStart.GetComponent<Node>(), GridManager.Instance.NodeEnd.GetComponent<Node>());
+                break;
+
+
+
         }
     }
 
     private void BacktrackPathIteration()
     {
-        if (backtrackNodeCurrent.NodeState == NodeState.START)
+        if(backtrackNodeCurrent == GridManager.Instance.NodeStart.GetComponent<Node>())
         {
-            isPathfinderFinnnished = true;
+            IsBacktrackDone = true;
             return;
         }
 
-        backtrackNodeCurrent.NodeState = NodeState.PATH;
+        backtrackNodeCurrent.state = NodeState.PATH;
         backtrackNodeCurrent.UpdateAppearance();
         backtrackNodeCurrent = backtrackNodeCurrent.CameFromNode;
     }
 
+    // Select Algorithm
+    public void SelectPreviousAlgorithm()
+    {
+        selectedAlgorithm = selectedAlgorithm.Previous();
+        PathfinderChanged.Invoke();
+    }
+
+    public void SelectNextAlgorithm()
+    {
+        selectedAlgorithm = selectedAlgorithm.Next();
+        PathfinderChanged.Invoke();
+    }
+
+    // Utilities
     static public int Cost(Vector2Int p1, Vector2Int p2)
     { 
         int distX = Mathf.Abs(p1.x - p2.x);

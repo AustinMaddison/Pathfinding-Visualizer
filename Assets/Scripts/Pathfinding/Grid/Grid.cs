@@ -7,6 +7,9 @@ using UnityEngine;
 
 public class Grid : MonoBehaviour
 {
+
+    public static Grid Instance { get; private set; }
+
     [SerializeField] private GridManager gridManager;
     [SerializeField] private Vector2Int gridSize;
     [SerializeField] private Vector2 nodeSize = Vector2.one;
@@ -14,6 +17,17 @@ public class Grid : MonoBehaviour
 
     [SerializeField] private GameObject nodePrefab;
     private GameObject[,] grid = null;
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
 
     public void InitGrid()
     {
@@ -29,7 +43,6 @@ public class Grid : MonoBehaviour
 
                 Node node = tmp.GetComponent<Node>();
                 node.Position = new Vector2Int(x, y);
-                node.SetGridManager = gridManager;
                 tmp.transform.SetParent(transform, true);
                 grid[x, y] = tmp;
             }

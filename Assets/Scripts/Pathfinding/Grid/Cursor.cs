@@ -4,10 +4,11 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class GridCursor : MonoBehaviour
+public class Cursor : MonoBehaviour
 {
+    public static Cursor Instance { get; private set; }
+
     [SerializeField] private Plane plane = new Plane(Vector3.up, 0f);
-    [SerializeField] private GridNodeEditor editor;
     
     private Camera cam;
     [SerializeField] private Vector3 currentMousePos;
@@ -17,6 +18,18 @@ public class GridCursor : MonoBehaviour
     [SerializeField] private Vector3 lastmousePosWorld;
     [SerializeField] private float lerpSpeed = 0.1f;
     [SerializeField] private float lerpGradient = 0.1f;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
 
     private void Start()
     {
@@ -30,7 +43,7 @@ public class GridCursor : MonoBehaviour
 
         Ray ray = cam.ScreenPointToRay(currentMousePos);
 
-        if(plane.Raycast(ray, out float distance))
+        if (plane.Raycast(ray, out float distance))
         {
             mousePosWorld = ray.GetPoint(distance);
         }
@@ -38,17 +51,27 @@ public class GridCursor : MonoBehaviour
         mousePosWorld.x = Mathf.Floor(mousePosWorld.x);
         mousePosWorld.z = Mathf.Floor(mousePosWorld.z);
 
-        
+
         transform.position = Vector3.Lerp(transform.position, mousePosWorld, Mathf.Pow(lerpSpeed * Time.deltaTime, lerpGradient));
 
-        if(IsOutBound || editor.GetEditMode == GridNodeEditor.EditMode.NONE)
+        if (IsOutBound || GridNodeEditor.Instance.Mode == GridNodeEditor.EditMode.NONE || !GridNodeEditor.Instance.isActive)
         {
-            gameObject.GetComponentInChildren<MeshRenderer>().enabled = false;
+            VisibilityOff();
         }
-        else 
-        { 
-            gameObject.GetComponentInChildren<MeshRenderer>().enabled = true;
+        else
+        {
+            VisibilityOn();
         }
+    }
+
+    public void VisibilityOff()
+    {
+        gameObject.GetComponentInChildren<MeshRenderer>().enabled = false;
+    }
+
+    public void VisibilityOn()
+    {
+        gameObject.GetComponentInChildren<MeshRenderer>().enabled = true;
     }
 
     public Vector2 VisibleRegion

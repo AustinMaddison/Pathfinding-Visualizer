@@ -31,14 +31,13 @@ public class Node : MonoBehaviour, IComparable<Node>
     [SerializeField] private Material openMat;
     [SerializeField] private Material closeMat;
 
-    private GridManager gridManager;
-
     // To backtrack to get final path.
     [SerializeField] private Node cameFromNode;
-    [SerializeField] private Direction cameFromDirection;
 
     // Node State
-    [SerializeField] NodeState state;
+    [SerializeField] public NodeState state { get; set; }
+    [SerializeField] private Direction cameFromDirection;
+
 
     // Position
     private Vector2Int postition;
@@ -267,7 +266,7 @@ public class Node : MonoBehaviour, IComparable<Node>
         for (int i = 0; i < offsets.GetLength(0); i++)
         {
             Vector2Int neighbourPos = new Vector2Int(pivot.x + offsets[i, 0], pivot.y + offsets[i, 1]);
-            GameObject neighbour = gridManager.Grid.GetValue(neighbourPos);
+            GameObject neighbour = Grid.Instance.GetValue(neighbourPos);
 
             if (neighbour != null)
             {
@@ -282,21 +281,16 @@ public class Node : MonoBehaviour, IComparable<Node>
         return $"({postition.x}, {postition.y})";
     }
 
-    public GridManager SetGridManager
-    {
-        set { gridManager = value; }
-    }
-
-    public NodeState NodeState { get { return state; } set { state = value; } }
+    //public NodeState NodeState { get { return state; } set { state = value; } }
 
     public bool IsStart
     {
-        get { return gridManager.NodeStart == GetComponent<GameObject>(); }
+        get { return GridManager.Instance.NodeStart == GetComponent<GameObject>(); }
     }
 
     public bool IsEnd
     {
-        get { return gridManager.NodeEnd == GetComponent<GameObject>(); }
+        get { return GridManager.Instance.NodeEnd == GetComponent<GameObject>(); }
     }
 
     public Vector2Int Position

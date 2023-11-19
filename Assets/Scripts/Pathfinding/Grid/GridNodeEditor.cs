@@ -4,28 +4,61 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GridNodeEditor : MonoBehaviour
 {
-    [Header("Compenents")]
-    [SerializeField] private GridManager gridManager;
-    [SerializeField] private GridCursor cursor;
-    [SerializeField] private Grid grid;
-
-    [SerializeField] private bool isActive = true;
-    [SerializeField] private bool isDragging = false;
-    private Vector2Int lastEditPos = new Vector2Int(-1, -1);
-
-    [SerializeField] private EditMode editMode = EditMode.NONE;
-
-    //private LeftClickDown
-
     public enum EditMode 
     { 
         NONE,
         SET_START,
         SET_END,
         SET_OBSTACLE
+    }
+
+    // Singleton
+    public static GridNodeEditor Instance { get; private set; }
+
+    // Events
+    public UnityEvent GridNodeEditorModeChanged;
+    public UnityEvent GridNodeEditorEnable;
+    public UnityEvent GridNodeEditorDisable;
+
+    // Flags
+    [SerializeField] public bool isActive = true;
+    [SerializeField] private bool isDragging = false;
+    private Vector2Int lastEditPos = new Vector2Int(-1, -1);
+    [SerializeField] public EditMode Mode { get; set; }
+
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+
+        SetEventListeners();
+    }
+
+    private void Start()
+    {
+        Mode = EditMode.NONE;
+    }
+
+    private void SetEventListeners() 
+    { 
+        GridNodeEditorEnable.AddListener(() => isActive = true);
+        GridNodeEditorEnable.AddListener(() => StateManager.Instance.inputActions.GridEditor.Enable());
+        GridNodeEditorEnable.AddListener(() => Debug.Log("GridNodeEditor: Enabled"));
+
+        GridNodeEditorDisable.AddListener(() => isActive = false);
+        GridNodeEditorDisable.AddListener(() => StateManager.Instance.inputActions.GridEditor.Disable());
+        GridNodeEditorDisable.AddListener(() => Debug.Log("GridNodeEditor: Disable"));
     }
 
     private void Update()
@@ -36,7 +69,7 @@ public class GridNodeEditor : MonoBehaviour
 
     private void HandleInput()
     {
-        UpdateMode();
+        //UpdateMode();
         UpdateNodeEdit();
     }
    
@@ -65,14 +98,14 @@ public class GridNodeEditor : MonoBehaviour
         // Modify only if a change occured;
         if (pressedDown)
         {
-            if (newMode == editMode)
+            if (newMode == Mode)
             {
-                editMode = EditMode.NONE;
+                Mode = EditMode.NONE;
                 //Debug.Log("Mode: " + editMode);
             }
             else
             {
-                editMode = newMode;
+                Mode = newMode;
                 //Debug.Log("Mode: " + editMode);
             }
         }
@@ -82,7 +115,7 @@ public class GridNodeEditor : MonoBehaviour
     private void UpdateNodeEdit()
     {
         
-        if (cursor.IsOutBound || editMode == EditMode.NONE) return;
+        if (Cursor.Instance.IsOutBound || Mode == EditMode.NONE) return;
 
         // Hold Drag Mechanic
         if (Input.GetMouseButtonDown(0))
@@ -98,12 +131,12 @@ public class GridNodeEditor : MonoBehaviour
         //if (Input.GetMouseButtonUp(0))
         //    isDragging = false;
 
-        if (isDragging && cursor.GetMouseNodePos != lastEditPos)
+        if (isDragging && Cursor.Instance.GetMouseNodePos != lastEditPos)
         {
-            lastEditPos = cursor.GetMouseNodePos;
-            GameObject node = grid.GetValue(cursor.GetMouseNodePos);
+            lastEditPos = Cursor.Instance.GetMouseNodePos;
+            GameObject node = Grid.Instance.GetValue(Cursor.Instance.GetMouseNodePos);
             
-            switch (editMode) 
+            switch (Mode) 
             {   
                 case EditMode.SET_START:
                     SetNodeStart(node);
@@ -124,12 +157,12 @@ public class GridNodeEditor : MonoBehaviour
     private void SetNodeStart(GameObject node)
     {
         Node nodeData = node.GetComponent<Node>();
-        NodeState nodeState = nodeData.NodeState;
+        NodeState nodeState = nodeData.state;
 
         // Case start to start -> default
         if(nodeState == NodeState.START)
         {
-            nodeData.NodeState = NodeState.DEFAULT;
+            nodeData.state = NodeState.DEFAULT;
         }
         RemovePreviousNodeStart();
 
@@ -137,22 +170,23 @@ public class GridNodeEditor : MonoBehaviour
         switch (nodeState)
         {
             case NodeState.END:
-                nodeData.NodeState = NodeState.START;
+                nodeData.state = NodeState.START;
+                RemovePreviousNodeEnd();
                 SetGridNodeStart(node);
                 break;
 
             case NodeState.OBSTACLE:
-                nodeData.NodeState = NodeState.START;
+                nodeData.state = NodeState.START;
                 SetGridNodeStart(node);
                 break;
 
             case NodeState.DEFAULT:
-                nodeData.NodeState = NodeState.START;
+                nodeData.state = NodeState.START;
                 SetGridNodeStart(node);   
                 break;
         }
 
-        if (nodeData.NodeState == NodeState.START)
+        if (nodeData.state == NodeState.START)
         {
             SetGridNodeStart(node);
         }
@@ -161,12 +195,12 @@ public class GridNodeEditor : MonoBehaviour
     private void SetNodeEnd(GameObject node)
     {
         Node nodeData = node.GetComponent<Node>();
-        NodeState nodeState = nodeData.NodeState;
+        NodeState nodeState = nodeData.state;
 
         // Case start to end -> end
         if (nodeState == NodeState.END)
         {
-            nodeData.NodeState = NodeState.DEFAULT;
+            nodeData.state = NodeState.DEFAULT;
         }
         RemovePreviousNodeEnd();
 
@@ -174,22 +208,23 @@ public class GridNodeEditor : MonoBehaviour
         switch (nodeState)
         {
             case NodeState.START:
-                nodeData.NodeState = NodeState.END;
+                RemovePreviousNodeStart();
+                nodeData.state = NodeState.END;
                 break;
 
             case NodeState.OBSTACLE:
-                nodeData.NodeState = NodeState.END;
+                nodeData.state = NodeState.END;
                 break;
 
             case NodeState.DEFAULT:
-                nodeData.NodeState = NodeState.END;
+                nodeData.state = NodeState.END;
                 break;
 
             default:
                 break;
         }
 
-        if (nodeData.NodeState == NodeState.END) 
+        if (nodeData.state == NodeState.END) 
         { 
             SetGridNodeEnd(node);
         }
@@ -197,57 +232,57 @@ public class GridNodeEditor : MonoBehaviour
 
     private void SetGridNodeStart(GameObject node)
     {
-        gridManager.NodeStart = node;
+        GridManager.Instance.NodeStart = node;
     }
 
     private void SetGridNodeEnd(GameObject node)
     {
-        gridManager.NodeEnd = node;
+        GridManager.Instance.NodeEnd = node;
     }
 
     private void RemovePreviousNodeStart()
     {
-        GameObject startNode = gridManager.NodeStart;
+        GameObject startNode = GridManager.Instance.NodeStart;
         if (startNode != null)
         {
-            startNode.GetComponent<Node>().NodeState = NodeState.DEFAULT;
+            startNode.GetComponent<Node>().state = NodeState.DEFAULT;
             startNode.GetComponent<Node>().UpdateAppearance();
-            gridManager.NodeStart = null;
+            GridManager.Instance.NodeStart = null;
         }
     }
 
     private void RemovePreviousNodeEnd()
     {
-        GameObject endNode = gridManager.NodeEnd;
+        GameObject endNode = GridManager.Instance.NodeEnd;
         if(endNode != null)
         {
-            endNode.GetComponent<Node>().NodeState = NodeState.DEFAULT;
+            endNode.GetComponent<Node>().state = NodeState.DEFAULT;
             endNode.GetComponent<Node>().UpdateAppearance();
-            gridManager.NodeEnd = null;
+            GridManager.Instance.NodeEnd = null;
         }    
     }
 
     private void SetNodeObstacle(GameObject node)
     { 
         Node nodeData = node.GetComponent<Node>();
-        NodeState nodeState = nodeData.NodeState;
+        NodeState nodeState = nodeData.state;
 
         switch (nodeState)
         {
             case NodeState.OBSTACLE:
-                nodeData.NodeState = NodeState.DEFAULT;
+                nodeData.state = NodeState.DEFAULT;
                 break;
 
             case NodeState.START:
-                nodeData.NodeState = NodeState.OBSTACLE;
+                nodeData.state = NodeState.OBSTACLE;
                 break;
 
             case NodeState.END:
-                nodeData.NodeState = NodeState.OBSTACLE;
+                nodeData.state = NodeState.OBSTACLE;
                 break;
 
             case NodeState.DEFAULT:
-                nodeData.NodeState = NodeState.OBSTACLE;
+                nodeData.state = NodeState.OBSTACLE;
                 break;
 
             default:
@@ -255,19 +290,4 @@ public class GridNodeEditor : MonoBehaviour
         }
     }
 
-    // Setters for GridManger
-    public Grid SetGrid 
-    {
-        set { grid = value; }
-    }
-
-    public GridCursor SetCursor
-    {
-        set { cursor = value; }
-    }
-
-    public EditMode GetEditMode
-    {
-        get { return editMode; }
-    }
 }

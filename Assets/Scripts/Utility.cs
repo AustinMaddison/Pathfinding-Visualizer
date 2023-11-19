@@ -22,10 +22,9 @@ public static class Extensions
 
         T[] Arr = (T[])Enum.GetValues(src.GetType());
         int j = Array.IndexOf<T>(Arr, src) - 1;
-        return Arr[Math.Abs(j) % Arr.Length];
+        return Arr[Math.Abs(j < 0 ? Arr.Length - 1 : j % Arr.Length)];
     }
 }
-
 
 public class Utility 
 {

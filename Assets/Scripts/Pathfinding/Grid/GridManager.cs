@@ -6,13 +6,14 @@ using UnityEngine.Events;
 
 public class GridManager : MonoBehaviour
 {
-    [Header("Components")]
-    [SerializeField] private Grid grid;
-    [SerializeField] private GridCursor cursor;
-    [SerializeField] private GridNodeEditor editor;
+    // Singleton
+    public static GridManager Instance { get; private set; }
+
+    // Events
+    [SerializeField] public UnityEvent SetGridSizeEvent;
 
     [Header("Configuration")]
-    [SerializeField] Vector2Int gridSize = new Vector2Int(5, 5);
+    [SerializeField] public Vector2Int gridSize = new Vector2Int(5, 5);
 
     [Header("GUI Input Fields")]
     [SerializeField] private TextMeshProUGUI defaultX;
@@ -23,8 +24,22 @@ public class GridManager : MonoBehaviour
     private GameObject nodeStart = null;
     private GameObject nodeEnd = null;
 
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+
     void Start()
     {
+
         // GUI fields
         defaultX.text = "" + gridSize.x;
         defaultY.text = "" + gridSize.y;
@@ -34,24 +49,25 @@ public class GridManager : MonoBehaviour
 
     public void UpdateGrid()
     {
+        StateManager.Instance.ResetPathfinder.Invoke();
+        NodeEnd = null;
+        NodeStart = null;
+
         updateGridSizeFromInput();
 
         // Cursor
-        cursor.VisibleRegion = gridSize;
+        Cursor.Instance.VisibleRegion = gridSize;
 
         // Grid 
-        grid.GridSize = gridSize;
-        grid.DestroyGrid();
-        grid.InitGrid();
+        Grid.Instance.GridSize = gridSize;
+        Grid.Instance.DestroyGrid();
+        Grid.Instance.InitGrid();
     }
 
     private void updateGridSizeFromInput()
     {
         int x = Utility.Tmp2Int(inputX);
         int y = Utility.Tmp2Int(inputY);
-
-        Debug.Log("x input: " + x);
-        Debug.Log("y input: " + y);
 
         if (x > 0 && x != gridSize.x)
         {
@@ -64,11 +80,6 @@ public class GridManager : MonoBehaviour
         }
     }
 
-    //// Update is called once per frame
-    //void Update()
-    //{
-    //}
-
     public GameObject NodeStart
     {
         get { return nodeStart; }
@@ -79,6 +90,4 @@ public class GridManager : MonoBehaviour
         get { return nodeEnd; }
         set { nodeEnd = value; }
     }
-
-    public Grid Grid{ get{ return grid;} }
 }
