@@ -1,0 +1,202 @@
+{
+    "name": "InputActions",
+    "maps": [
+        {
+            "name": "GridEditor",
+            "id": "98d399d1-50c3-4c5d-a8d8-d8f410c90598",
+            "actions": [
+                {
+                    "name": "ToggleModeStart",
+                    "type": "Button",
+                    "id": "99616ae3-29e7-4583-bf3b-3669c7b52cf6",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ToggleModeEnd",
+                    "type": "Button",
+                    "id": "29463538-3b75-4a97-803e-d4d7b0241267",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ToggleModeObstacles",
+                    "type": "Button",
+                    "id": "0d819f18-ca6b-4909-bf2f-3dcb0a12e14e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ChangeStateOfCell",
+                    "type": "Button",
+                    "id": "ea6f19d2-29a7-45fc-9a17-2470f8e0f6a0",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "1234541c-2e0b-41b2-be23-37674174c913",
+                    "path": "<Keyboard>/1",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleModeStart",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "42232ce6-e906-4b8f-9dea-371ac82e9a75",
+                    "path": "<Keyboard>/2",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleModeEnd",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cc6a380f-4f7a-490a-9258-176e0b575061",
+                    "path": "<Keyboard>/3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleModeObstacles",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4fcacf0a-460d-44cc-8285-863fa98e8845",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeStateOfCell",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Pathfinder",
+            "id": "1709debc-4cb5-456f-a1b2-1437ace7d7fe",
+            "actions": [
+                {
+                    "name": "ToggleRun",
+                    "type": "Button",
+                    "id": "460082d8-0efd-4f0b-b156-b028aecf63b2",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RunIteration",
+                    "type": "Button",
+                    "id": "8e0b4895-881f-4301-9484-dbafcb37201d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Reset",
+                    "type": "Button",
+                    "id": "7c83d948-19b6-42c6-b951-efa62d56facd",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "NextAlgorithm",
+                    "type": "Button",
+                    "id": "6ba102b2-9069-4b0a-ad49-2ee69cfb5fd6",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "PreviousAlgorithm",
+                    "type": "Button",
+                    "id": "17fb7110-a5ab-4fd8-96e7-a775efff7b10",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "abf27d2b-6500-4e9e-bdaf-adc2724717ab",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ToggleRun",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "23f17370-3074-47d8-8fb7-b147c1f73ad7",
+                    "path": "<Keyboard>/x",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RunIteration",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "72def3d3-3513-45d5-8c4c-f88b2a585018",
+                    "path": "<Keyboard>/z",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Reset",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4a4dfef0-09e1-4218-8886-7c97a7ee5772",
+                    "path": "<Keyboard>/rightArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "NextAlgorithm",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e345d632-2c2b-4b86-b462-92efb653a7f0",
+                    "path": "<Keyboard>/leftArrow",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PreviousAlgorithm",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

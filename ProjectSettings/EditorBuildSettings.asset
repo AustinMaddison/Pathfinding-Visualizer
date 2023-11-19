@@ -8,5 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/PathfindingVisualizer.unity
     guid: 49b82506b6ca37d4bba5e4e3a6214a2d
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.input.settings: {fileID: 11400000, guid: 0a99ddcef69ccad47a516c7f97ba5557,
+      type: 2}
   m_UseUCBPForAssetBundles: 0
