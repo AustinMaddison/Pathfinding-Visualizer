@@ -55,16 +55,16 @@ public class UIManager : MonoBehaviour
         switch (PathfinderManager.Instance.selectedAlgorithm)
         {
             case PathfindersEnum.A_STAR:
-                algorithmTMP.text = "A*";
+                algorithmTMP.text = "A* Pathfinder";
                 break;
             case PathfindersEnum.DIJKSTRAS:
-                algorithmTMP.text = "Dijktras's";
+                algorithmTMP.text = "Dijktras's Pathfinder";
                 break;
             case PathfindersEnum.BFS:
-                algorithmTMP.text = "BFS";
+                algorithmTMP.text = "Breadth-First-Search";
                 break;
             case PathfindersEnum.GREEDY:
-                algorithmTMP.text = "Greedy";
+                algorithmTMP.text = "Greedy-Best-First-Search";
                 break;
         }
     }

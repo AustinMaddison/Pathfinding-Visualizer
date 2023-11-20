@@ -77,9 +77,13 @@ public class PathfinderManager : MonoBehaviour
 
     public void Reset()
     {
+        PathfindersEnum tmp = selectedAlgorithm; 
+        
         ResetGridNodes();
         Start();
         StatsChanged.Invoke();
+
+        selectedAlgorithm = tmp;
     }
 
     void Update()
