@@ -52,7 +52,7 @@ public class AStarPathfinder: PathfinderInterface
             Status = PathfinderStatus.NO_PATH_FOUND;
             return;
         }
-        
+
         // Find node with best f cost.
         nodeCurrent = openNodeSet.Min();
         openNodeSet.Remove(nodeCurrent);
@@ -82,11 +82,8 @@ public class AStarPathfinder: PathfinderInterface
                 neighbour.state != NodeState.START
                 )
             {
-                // criteria to choose best path
-                //if (neighbour.NodeState == NodeState.OPEN)
-                //Debug.Log(neighbour);
+                // Criteria to choose only open better paths by minimizing g.
                 int tentativeGScore = node.GCost + PathfinderManager.Cost(node.Position, neighbour.Position);
-
                 if(tentativeGScore < neighbour.GCost || neighbour.state != NodeState.OPEN)
                 {
                     neighbour.CameFromNode = node;

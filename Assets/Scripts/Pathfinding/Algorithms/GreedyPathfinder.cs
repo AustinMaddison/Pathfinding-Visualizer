@@ -28,8 +28,10 @@ public class GreedyPathfinder: PathfinderInterface
         closedNodeSet = new HashSet<Node>();
 
         // Calculate startnode costs
+        int g = 0;
         int h = PathfinderManager.Cost(nodeStart.Position, nodeEnd.Position);
-        nodeStart.SetCost(0, h, h);
+        int f = g + h;
+        nodeStart.SetCost(g, h, f);
 
         // Start from start node.
         openNodeSet.Add(this.nodeStart);
@@ -52,8 +54,10 @@ public class GreedyPathfinder: PathfinderInterface
             return;
         }
         
-        // Find node with best f cost.
+        // Greedy criteria:
+        // find opened node with best f cost.
         nodeCurrent = openNodeSet.Min();
+        Debug.Log($"{Distance}");
         openNodeSet.Remove(nodeCurrent);
 
         // Found end
@@ -81,18 +85,14 @@ public class GreedyPathfinder: PathfinderInterface
                 neighbour.state != NodeState.START
                 )
             {
-                // criteria to choose best path
-                //if (neighbour.NodeState == NodeState.OPEN)
-                //Debug.Log(neighbour);
-              
-
-                if(neighbour.state != NodeState.OPEN)
+                
+                if (neighbour.state != NodeState.OPEN)
                 {
                     neighbour.CameFromNode = node;
 
-                    int h = 0;
-                    int g = PathfinderManager.Cost(neighbour.Position, nodeEnd.Position);
-                    int f = h + g;
+                    int g = node.GCost + PathfinderManager.Cost(node.Position, neighbour.Position);
+                    int h = PathfinderManager.Cost(neighbour.Position, nodeEnd.Position);
+                    int f = h; // not include distance g as this isn't multi-objective.
                     neighbour.SetCost(g, h, f);
 
                     if (neighbour.state != NodeState.END)
@@ -120,7 +120,5 @@ public class GreedyPathfinder: PathfinderInterface
     public HashSet<Node> ClosedNodeSet => closedNodeSet;
     public int OpenNodesTotal => openNodeSet.Count;
     public int ClosedNodesTotal => closedNodeSet.Count;
-
-
     public int Distance => nodeCurrent.GCost;
 }
