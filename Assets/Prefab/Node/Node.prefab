@@ -52,6 +52,8 @@ MonoBehaviour:
   startEndMat: {fileID: 2100000, guid: 17d0d10ecfa017d48b4160b39f72f902, type: 2}
   openMat: {fileID: 2100000, guid: 3cac1959772658c44bc593ffcc01771e, type: 2}
   closeMat: {fileID: 2100000, guid: d4ca73fc90aeb204bbb317c21ecbcc7e, type: 2}
+  cameFromNode: {fileID: 0}
+  cameFromDirection: 0
   labelHCost: {fileID: 2850142408435176326}
   labelGCost: {fileID: 3910935292231744681}
   labelFCost: {fileID: 3776317415815735251}

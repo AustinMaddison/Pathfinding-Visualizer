@@ -14,8 +14,6 @@ namespace CodeMonkey.CameraSystem {
         [SerializeField] public UnityEvent ResetCamera;
 
         [SerializeField] private CinemachineVirtualCamera cinemachineVirtualCamera;
-        [SerializeField] private bool useEdgeScrolling = false;
-        [SerializeField] private bool useDragPan = false;
         [SerializeField] private float fieldOfViewMax = 50;
         [SerializeField] private float fieldOfViewMin = 10;
         [SerializeField] private float followOffsetMin = 5f;
@@ -24,100 +22,98 @@ namespace CodeMonkey.CameraSystem {
         [SerializeField] private float followOffsetMaxY = 50f;
         [SerializeField] private float dragPanSpeed = .1f;
         [SerializeField] private float zoomSpeed = .1f;
-        [SerializeField] private float moveKeysPan = .1f;
+        [SerializeField] private float movementSpeed;
+        [SerializeField] private float normalSpeed = 10f;
+        [SerializeField] private float fastSpeed = 30f;
+        [SerializeField] private float movementTime = 12f;
 
-
-
-        private bool dragPanMoveActive;
-        private Vector2 lastMousePosition;
         private float targetFieldOfView = 50;
         private Vector3 followOffset;
 
+        private Vector3 newPosition;
+        private Vector3 dragStartPosition;
+        private Vector3 dragCurrentPosition;
 
         private void Awake() {
             followOffset = cinemachineVirtualCamera.GetCinemachineComponent<CinemachineTransposer>().m_FollowOffset;
         }
 
+        private void Start()
+        {
+            newPosition = transform.position;
+        }
+
         private void Update() {
+            HandleCameraMovementDragPan();
+            HandleReset();
             HandleCameraMovement();
-
-            if (useEdgeScrolling) {
-                HandleCameraMovementEdgeScrolling();
-            }
-
-            if (useDragPan) {
-                HandleCameraMovementDragPan();
-            }
-
             HandleCameraRotation();
 
             HandleCameraZoom_FieldOfView();
             HandleCameraZoom_MoveForward();
             HandleCameraZoom_LowerY();
+
+        }
+
+        private void HandleReset()
+        {
+            if (Input.GetKey(KeyCode.R))
+            {
+                newPosition = new Vector3(GridManager.Instance.gridSize.x/2f, transform.position.y, GridManager.Instance.gridSize.y / 2f);
+            }
+
         }
 
         private void HandleCameraMovement() {
             Vector3 inputDir = new Vector3(0, 0, 0);
+
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                movementSpeed = fastSpeed;
+            }
+            else
+            {
+                movementSpeed = normalSpeed;
+            }
 
             if (Input.GetKey(KeyCode.W)) inputDir.z = +1f;
             if (Input.GetKey(KeyCode.S)) inputDir.z = -1f;
             if (Input.GetKey(KeyCode.A)) inputDir.x = -1f;
             if (Input.GetKey(KeyCode.D)) inputDir.x = +1f;
 
-            Vector3 moveDir = transform.forward * inputDir.z + transform.right * inputDir.x;
-
-            transform.position += moveDir * moveKeysPan * Time.deltaTime;
+            newPosition += transform.forward * inputDir.z * movementSpeed + transform.right * inputDir.x * movementSpeed;
+            transform.position = Vector3.Lerp(transform.position, newPosition, Time.deltaTime * movementTime);
         }
 
-        private void HandleCameraMovementEdgeScrolling() {
-            Vector3 inputDir = new Vector3(0, 0, 0);
-
-            int edgeScrollSize = 20;
-
-            if (Input.mousePosition.x < edgeScrollSize) {
-                inputDir.x = -1f;
-            }
-            if (Input.mousePosition.y < edgeScrollSize) {
-                inputDir.z = -1f;
-            }
-            if (Input.mousePosition.x > Screen.width - edgeScrollSize) {
-                inputDir.x = +1f;
-            }
-            if (Input.mousePosition.y > Screen.height - edgeScrollSize) {
-                inputDir.z = +1f;
-            }
-
-            Vector3 moveDir = transform.forward * inputDir.z + transform.right * inputDir.x;
-
-            float moveSpeed = 50f;
-            transform.position += moveDir * moveSpeed * Time.deltaTime;
-        }
 
         private void HandleCameraMovementDragPan() {
-            Vector3 inputDir = new Vector3(0, 0, 0);
 
             if (Input.GetMouseButtonDown(1)) {
-                dragPanMoveActive = true;
-                lastMousePosition = Input.mousePosition;
-            }
-            if (Input.GetMouseButtonUp(1)) {
-                dragPanMoveActive = false;
-            }
-
-            if (dragPanMoveActive) {
-                Vector2 mouseMovementDelta = (Vector2)Input.mousePosition - lastMousePosition;
-
                 
-                inputDir.x = mouseMovementDelta.x * dragPanSpeed;
-                inputDir.z = mouseMovementDelta.y * dragPanSpeed;
+                Plane plane = new Plane(Vector3.up, Vector3.zero);
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-                lastMousePosition = Input.mousePosition;
+                float entry;
+
+                if (plane.Raycast(ray, out entry))
+                {
+                    dragStartPosition = ray.GetPoint(entry);
+                }
             }
 
-            Vector3 moveDir = transform.forward * inputDir.z + transform.right * inputDir.x;
+            if (Input.GetMouseButton(1)) {
 
-            float moveSpeed = 50f;
-            transform.position += moveDir * moveSpeed * Time.deltaTime;
+                Plane plane = new Plane(Vector3.up, Vector3.zero);
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+                float entry;
+
+                if(plane.Raycast(ray, out entry))
+                {
+                    dragCurrentPosition = ray.GetPoint(entry);
+                    newPosition = transform.position + dragStartPosition - dragCurrentPosition;
+                }
+            }
         }
 
         private void HandleCameraRotation() {
