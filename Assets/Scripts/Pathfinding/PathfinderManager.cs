@@ -40,6 +40,7 @@ public class PathfinderManager : MonoBehaviour
     public UnityEvent NoPathFoundEvent;
     public UnityEvent PathFoundEvent;
     public UnityEvent StatsChanged;
+    public UnityEvent StatsReset;
     public UnityEvent PathfinderChanged;
 
     // BACKTRACK
@@ -81,9 +82,9 @@ public class PathfinderManager : MonoBehaviour
         
         ResetGridNodes();
         Start();
-        StatsChanged.Invoke();
-
         selectedAlgorithm = tmp;
+        
+        StatsReset.Invoke();
     }
 
     void Update()

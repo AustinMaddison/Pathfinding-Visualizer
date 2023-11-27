@@ -4,16 +4,26 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Events;
+using XCharts.Runtime;
 
 public class UIManager : MonoBehaviour
 {
     public static UIManager Instance { get; private set; }
-    [Header("Statisitcs")]
+    
+    // Statistics
+
+    [Header("Table")]
     [SerializeField] private TextMeshProUGUI iterationTMP;
     [SerializeField] private TextMeshProUGUI distanceTMP;
     [SerializeField] private TextMeshProUGUI openedTMP;
     [SerializeField] private TextMeshProUGUI closedTMP;
     [SerializeField] private TextMeshProUGUI ratioTMP;
+    
+    [Header("Charts")]
+    [SerializeField] private LineChart distanceChart;
+    [SerializeField] private LineChart openedChart;
+    [SerializeField] private LineChart closedChart;
+    [SerializeField] private LineChart ratioChart;
 
     [Header("Algorithm Selector")]
     [SerializeField] private TextMeshProUGUI algorithmTMP;
@@ -34,7 +44,21 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
         PathfinderManager.Instance.StatsChanged.AddListener(UpdateStats);
+        PathfinderManager.Instance.StatsChanged.AddListener(UpdateStats);
         PathfinderManager.Instance.PathfinderChanged.AddListener(UpdateAlgorithmLabel);
+        PathfinderManager.Instance.StatsReset.AddListener(ResetStats);
+
+        ResetStats();
+    }
+
+    public void ResetStats()
+    {
+        // Reset Chart
+        distanceChart.ClearData();
+        openedChart.ClearData();
+        closedChart.ClearData();
+        ratioChart.ClearData();
+
         UpdateStats();
         UpdateAlgorithmLabel();
     }
@@ -47,8 +71,15 @@ public class UIManager : MonoBehaviour
         closedTMP.text = $"{PathfinderManager.Instance.ClosedNodesTotal}";
         ratioTMP.text = $"{Ratio()}";
 
+        distanceChart.AddData(0, PathfinderManager.Instance.Distance);
+        openedChart.AddData(0, PathfinderManager.Instance.OpenNodesTotal);
+        closedChart.AddData(0, PathfinderManager.Instance.ClosedNodesTotal);
+        ratioChart.AddData(0, Ratio());
+
+
         Debug.Log(Ratio());
     }
+
 
     public void UpdateAlgorithmLabel()
     {
@@ -69,9 +100,11 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    private float Ratio() {
+    private double Ratio() {
 
-        return (float)(PathfinderManager.Instance.OpenNodesTotal + PathfinderManager.Instance.ClosedNodesTotal) / (GridManager.Instance.gridSize.x * GridManager.Instance.gridSize.y);
+        float res = (float)(PathfinderManager.Instance.OpenNodesTotal + PathfinderManager.Instance.ClosedNodesTotal) / (GridManager.Instance.gridSize.x * GridManager.Instance.gridSize.y);
+
+        return (double)System.Math.Round((decimal)res, 2);
     }
 
 
