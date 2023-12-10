@@ -85,22 +85,27 @@ public class DijkstrasPathfinder: PathfinderInterface
                 //if (neighbour.NodeState == NodeState.OPEN)
                 //Debug.Log(neighbour);
                 int tentativeGScore = node.GCost + PathfinderManager.Cost(node.Position, neighbour.Position);
+                int h = 0;
+                int f = tentativeGScore + h;
 
-                if(tentativeGScore < neighbour.GCost || neighbour.state != NodeState.OPEN)
+                if (tentativeGScore < neighbour.GCost || neighbour.state != NodeState.OPEN)
                 {
                     neighbour.CameFromNode = node;
-                    
+
+      
+
                     // Found end
                     if (neighbour == nodeEnd)
                     {
+                        neighbour.SetCost(tentativeGScore, h, f);
+
                         Debug.Log("Found optimal path.");
+                        nodeCurrent = neighbour;
                         Status = PathfinderStatus.PATH_FOUND;
                         IsDone = true;
                         return;
                     }
-
-                    int h = 0;
-                    int f = tentativeGScore + h;
+  
                     neighbour.SetCost(tentativeGScore, h, f);
 
                     if (neighbour.state != NodeState.END)

@@ -84388,10 +84388,10 @@ MonoBehaviour:
   followOffsetMinY: 14
   followOffsetMaxY: 100
   dragPanSpeed: 0.01
-  zoomSpeed: 2
-  movementSpeed: 100
-  normalSpeed: 0.4
-  fastSpeed: 5
+  zoomSpeed: 1
+  movementSpeed: 1
+  normalSpeed: 0.2
+  fastSpeed: 2.5
   movementTime: 12
 --- !u!1 &1749109065
 GameObject:

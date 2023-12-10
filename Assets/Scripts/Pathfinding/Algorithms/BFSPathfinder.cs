@@ -55,14 +55,14 @@ public class BFSPathfinder: PathfinderInterface
         nodeCurrent = queue.Dequeue();
         visited.Add(nodeCurrent);
 
-        // Found end
-        if (nodeCurrent == nodeEnd)
-        {
-            Debug.Log("Found optimal path.");
-            Status = PathfinderStatus.PATH_FOUND;
-            IsDone = true;
-            return;
-        }
+        //// Found end
+        //if (nodeCurrent == nodeEnd)
+        //{
+        //    Debug.Log("Found optimal path.");
+        //    Status = PathfinderStatus.PATH_FOUND;
+        //    IsDone = true;
+        //    return;
+        //}
 
         // Close the best node for potential best path.
         CloseNode(nodeCurrent);
@@ -86,6 +86,13 @@ public class BFSPathfinder: PathfinderInterface
                 // Calculate Cost
                 neighbour.CameFromNode = node;
 
+             
+
+                int tentativeGScore = node.GCost + PathfinderManager.Cost(node.Position, neighbour.Position);
+                int h = 0;
+                int f = tentativeGScore + h;
+                neighbour.SetCost(tentativeGScore, h, f);
+                
                 // Found end
                 if (neighbour == nodeEnd)
                 {
@@ -95,11 +102,6 @@ public class BFSPathfinder: PathfinderInterface
                     return;
                 }
 
-                int tentativeGScore = node.GCost + PathfinderManager.Cost(node.Position, neighbour.Position);
-                int h = 0;
-                int f = tentativeGScore + h;
-                neighbour.SetCost(tentativeGScore, h, f);
-
                 if (neighbour.state != NodeState.END)
                 {
                     neighbour.state = NodeState.OPEN;
@@ -107,6 +109,7 @@ public class BFSPathfinder: PathfinderInterface
                 }
 
                 queue.Enqueue(neighbour);
+                visited.Add(neighbour);
 
             }
         }
