@@ -9,6 +9,7 @@ Features:
 - Set Obstacles
 - Choose Alpgorthm to run: BFS, Djistras, Greedy and A*
 - Run Pathfinding Per Step or Untill End Node is Found
+- Realtime Progress Data
 
 ![demo](/Demo.png)
 
