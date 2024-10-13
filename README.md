@@ -1,4 +1,15 @@
+
+
 ![header](/Header.png)
+This is a toy program I made using C# .NET and Unity for my Heursitic Optimization Course, It is a toy visualization tool for learning different 2D grid based pathfinding algorithms.
+
+Features:  
+- Change Grid Size
+- Set Start and End Nodes
+- Set Obstacles
+- Choose Alpgorthm to run: BFS, Djistras, Greedy and A*
+- Run Pathfinding Per Step or Untill End Node is Found
+
 ![demo](/Demo.png)
 
 # PATHFINDING WITH HEURISTICS IN 2D SPACE  
@@ -11,8 +22,6 @@
 
 **Report:**  
 [PDF](https://drive.google.com/file/d/1opp928ZHbrD966KndaOnuCScmxG083Zn/view?usp=sharing)  
-<img src="/Report_Extract_1.jpg" width="500">
-<img src="/Report_Extract_2.jpg" width="1000">
 
 
 **Visualization Application Executable (Windows Build):**  
