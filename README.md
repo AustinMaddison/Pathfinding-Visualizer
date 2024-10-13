@@ -1,7 +1,7 @@
 
 
 ![header](/Header.png)
-This is a toy program I made using C# .NET and Unity for my Heursitic Optimization Course, It is a toy visualization tool for learning different 2D grid based pathfinding algorithms.
+This is a program I made using C# .NET and Unity for my Heursitic Optimization Course, It is a toy visualization tool for learning different 2D grid based pathfinding algorithms.
 
 Features:  
 - Change Grid Size
