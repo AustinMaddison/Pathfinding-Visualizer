@@ -1,7 +1,10 @@
-
+<div align="center">
 
 ![header](/Header.png)
-This is a program I made using C# .NET and Unity for my Heursitic Optimization Course, It is a toy visualization tool for learning different 2D grid based pathfinding algorithms.
+__This is a program I made using C# .NET and Unity for my Heursitic Optimization Course, It is a toy visualization tool for learning different 2D grid based pathfinding algorithms.__
+
+</div>
+
 
 Features:  
 - Change Grid Size
