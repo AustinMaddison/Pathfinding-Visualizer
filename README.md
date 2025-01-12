@@ -14,10 +14,14 @@ Features:
 - Run Pathfinding Per Step or Untill End Node is Found
 - Realtime Progress Data
 
+
 <div align="center">
 
-[thumbnail.webm](https://github.com/user-attachments/assets/586e7f8e-d27a-46ea-9695-be0158eabb5e)
-  
+
+[Demo](https://github.com/user-attachments/assets/40e60843-68ee-4b91-a8d8-e593a2ecb236)
+
+
+
 </div>
 
 
