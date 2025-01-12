@@ -11,7 +11,12 @@ Features:
 - Run Pathfinding Per Step or Untill End Node is Found
 - Realtime Progress Data
 
-![demo](/Demo.png)
+<div align="center">
+
+[thumbnail.webm](https://github.com/user-attachments/assets/586e7f8e-d27a-46ea-9695-be0158eabb5e)
+  
+</div>
+
 
 # PATHFINDING WITH HEURISTICS IN 2D SPACE  
 ### Implementation using 2D Grid World Representation 
